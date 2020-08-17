@@ -5,7 +5,7 @@ import random
 import time
 
 pygame.init()
-vec = pygame.math.Vector2 #2D vector
+vec = pygame.math.Vector2 #2D vector 
 
 HEIGHT = 450
 WIDTH = 400
