@@ -55,7 +55,7 @@ colors = (
 
 def Cube():
     glBegin(GL_QUADS)
-    for surface in surfaces[0:2]:
+    for surface in surfaces:
         x = 1
         for vertex in surface:
             glColor3fv(colors[x])
@@ -89,22 +89,46 @@ def main():
 
     gluPerspective(45, (display[0]/display[1]), 0.1, 50.0)
 
-    glTranslatef(0.0, 0.0, -5)
-    glRotatef(0, 0, 0, 0)
+    glTranslatef(0.0, 0.0, -40)
+    # glRotatef(25, 2, 1, 0)
 
-    while True:
+    object_passed = False
+
+    print(object_passed)
+
+    while not object_passed:
         for event in pygame.event.get():
-            if event.type == KEYDOWN:
-                if event.key == K_SPACE:
-                    glRotatef(1, 3, 1, 1)
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    glRotatef(1, 3, 1, 1)
+                if event.key == K_LEFT:
+                    glTranslatef(0.5, 0, 0)
+                if event.key == K_RIGHT:
+                    glTranslatef(-0.5, 0, 0)
+                if event.key == K_UP:
+                    glTranslatef(0, -1, 0)
+                if event.key == K_DOWN:
+                    glTranslatef(0, 1, 0)
+            # if event.type == MOUSEBUTTONDOWN:
+            #     if event.button == 4:
+            #         glTranslatef(0, 0, 1.0)
+            #     if event.button == 5:
+            #         glTranslatef(0, 0, -1.0)
 
-        
+        x = glGetDoublev(GL_MODELVIEW_MATRIX)
+
+        camera_z = x[3][2]
+
+        if camera_z <= 0:
+            object_passed = True
+
         # glRotatef(1, 3, 1, 1)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        # Enable depth test
+        glTranslatef(0, 0, 0.5)
+       # Enable depth test
         glEnable(GL_DEPTH_TEST)
         # Accept fragment if it closer to the camera than the former one
         glDepthFunc(GL_LESS)
@@ -116,4 +140,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    for x in range(10):
+        main()
+        glLoadIdentity() 
+    pygame.quit()
+    quit()
