@@ -69,9 +69,13 @@ def ground():
     glEnd()
 
 
-def set_vertices(max_distance, min_distance = -20):
-    x_value_change = random.randrange(-10,10)
-    y_value_change = random.randrange(-10,10)
+def set_vertices(max_distance, min_distance = -20, camera_x = 0, camera_y = 0):
+
+    camera_x = -1 * int(camera_x)
+    camera_y = -1 * int(camera_y)
+
+    x_value_change = random.randrange(camera_x-75, camera_x+75)
+    y_value_change = random.randrange(camera_y-75, camera_y+75)
     z_value_change = random.randrange(-1*max_distance, min_distance)
 
     new_vertices = []
@@ -130,17 +134,20 @@ def main():
 
     gluPerspective(45, (display[0]/display[1]), 0.1, max_distance)
 
-    glTranslatef(random.randrange(-5,5),random.randrange(-5,5), -40)
-    # glRotatef(25, 2, 1, 0)
-
-    # object_passed = False
+    glTranslatef(0, 0, -40)
 
     x_move = 0
     y_move = 0
 
+    cur_x = 0
+    cur_y = 0
+
+    game_speed = 2
+    direction_speed = 2
+
     cube_dict = {}
 
-    for x in range(20):
+    for x in range(75):
         cube_dict[x] = set_vertices(max_distance)
 
     while True:
@@ -153,13 +160,13 @@ def main():
                 if event.key == K_SPACE:
                     glRotatef(10, 1, 1, 1)
                 if event.key == K_LEFT:
-                    x_move = 0.3
+                    x_move = direction_speed
                 if event.key == K_RIGHT:
-                    x_move = -0.3
+                    x_move = -direction_speed
                 if event.key == K_UP:
-                    y_move = -0.3
+                    y_move = -direction_speed
                 if event.key == K_DOWN:
-                    y_move = 0.3
+                    y_move = direction_speed
 
             if event.type == KEYUP:
                 if event.key == K_LEFT or event.key == K_RIGHT:
@@ -171,12 +178,15 @@ def main():
 
         camera_z = mdlview_matrx[3][2]
 
+        cur_x += x_move
+        cur_y += y_move
+
         # if camera_z <= 0:
         #     object_passed = True
 
         # glRotatef(1, 3, 1, 1)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        glTranslatef(x_move, y_move, 0.5)
+        glTranslatef(x_move, y_move, game_speed)
        # Enable depth test
         glEnable(GL_DEPTH_TEST)
         # Accept fragment if it closer to the camera than the former one
@@ -190,13 +200,13 @@ def main():
 
         for each_cube in cube_dict:
             if camera_z <= cube_dict[each_cube][0][2]:
-                new_max = int(-1*(camera_z-max_distance))
+                new_max = int(-1*(camera_z-(max_distance * 2)))
 
-                cube_dict[each_cube] = set_vertices(new_max, int(camera_z))
+                cube_dict[each_cube] = set_vertices(new_max, int(camera_z-max_distance), cur_x, cur_y)
 
         # Cube_small()
         pygame.display.flip()
-        pygame.time.wait(10)
+        # pygame.time.wait(10)
 
 
 if __name__ == "__main__":
