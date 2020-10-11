@@ -46,46 +46,24 @@ surfaces = (
 )
 
 colors = (
-    (1,0,0),
-    (0,1,0),
-    (0,0,1),
-    (1,1,0),
-    (1,0,1),
+    (0.25, 0.5, 1), # B
+    (1,0.5,0.25), # O
+    (0.25,0.5,0.25), # G
+    (1, 0.25, 0.2), # R
+    (1,1,1), # W
+    (1,0.75,0), # Y
 )
 
-ground_vertices = (
-    (-10, -1.1, 20),
-    (10, -1.1, 20),
-    (-10, -1.1, -300),
-    (10, -1.1, -300),
-)
-
-def ground():
-    glBegin(GL_QUADS)
-    for vertex in ground_vertices:
-        glColor3fv((0, 0.5, 0.5))
-        glVertex3fv(vertex)
-
-    glEnd()
-
-
-def set_vertices(max_distance, min_distance = -20, camera_x = 0, camera_y = 0):
-
-    camera_x = -1 * int(camera_x)
-    camera_y = -1 * int(camera_y)
-
-    x_value_change = random.randrange(camera_x-75, camera_x+75)
-    y_value_change = random.randrange(camera_y-75, camera_y+75)
-    z_value_change = random.randrange(-1*max_distance, min_distance)
+def set_vertices(delta_x, delta_y, delta_z):
 
     new_vertices = []
 
     for vert in vertices:
         new_vert = []
 
-        new_x = vert[0] + x_value_change
-        new_y = vert[1] + y_value_change
-        new_z = vert[2] + z_value_change
+        new_x = vert[0] + delta_x
+        new_y = vert[1] + delta_y
+        new_z = vert[2] + delta_z
 
         new_vert.append(new_x)
         new_vert.append(new_y)
@@ -97,31 +75,25 @@ def set_vertices(max_distance, min_distance = -20, camera_x = 0, camera_y = 0):
 
 
 def Cube(vertices):
+  
+    glLineWidth(5)
+    glBegin(GL_LINES)
+    glColor3fv((0,0,0))
+    for edge in edges:
+        for vertex in edge:
+            glVertex3fv(vertices[vertex])
+    glEnd()
+
+    c_index = 0
     glBegin(GL_QUADS)
     for surface in surfaces:
-        x = 1
         for vertex in surface:
-            glColor3fv(colors[x])
+            glColor3fv(colors[c_index])
             glVertex3fv(vertices[vertex])
-            x += 1
+        c_index += 1
     glEnd()
 
 
-    glBegin(GL_LINES)
-    glColor3fv(colors[0])
-    for edge in edges:
-        for vertex in edge:
-            glVertex3fv(vertices[vertex])
-    glEnd()
-
-
-def Cube_small():
-    glBegin(GL_LINES)
-    for edge in edges:
-        for vertex in edge:
-            v = tuple(x/2 for x in vertices[vertex])
-            glVertex3fv(v)
-    glEnd()
 
 
 def main():
@@ -134,21 +106,16 @@ def main():
 
     gluPerspective(45, (display[0]/display[1]), 0.1, max_distance)
 
-    glTranslatef(0, 0, -40)
-
-    x_move = 0
-    y_move = 0
-
-    cur_x = 0
-    cur_y = 0
-
-    game_speed = 2
-    direction_speed = 2
+    glTranslatef(0, 0, -20)
 
     cube_dict = {}
 
-    for x in range(75):
-        cube_dict[x] = set_vertices(max_distance)
+    for x in range(3):
+        for y in range(3):
+            for z in range(3):
+                cube_dict[9*x+3*y+z] = set_vertices(2*(x-1), 2*(y-1), 2*(z-1))
+
+    glRotatef(45, 1, 1, 1)
 
     while True:
         for event in pygame.event.get():
@@ -156,61 +123,39 @@ def main():
                 pygame.quit()
                 sys.exit()
 
-            if event.type == KEYDOWN:
-                if event.key == K_SPACE:
-                    glRotatef(10, 1, 1, 1)
-                if event.key == K_LEFT:
-                    x_move = direction_speed
-                if event.key == K_RIGHT:
-                    x_move = -direction_speed
-                if event.key == K_UP:
-                    y_move = -direction_speed
-                if event.key == K_DOWN:
-                    y_move = direction_speed
+            # if event.type == KEYDOWN:
+            #     if event.key == K_SPACE:
+            #         glRotatef(10, 1, 1, 1)
+            #     if event.key == K_LEFT:
+            #         x_move = direction_speed
+            #     if event.key == K_RIGHT:
+            #         x_move = -direction_speed
+            #     if event.key == K_UP:
+            #         y_move = -direction_speed
+            #     if event.key == K_DOWN:
+            #         y_move = direction_speed
 
-            if event.type == KEYUP:
-                if event.key == K_LEFT or event.key == K_RIGHT:
-                    x_move = 0
-                if event.key == K_UP or event.key == K_DOWN:
-                    y_move = 0
+            # if event.type == KEYUP:
+            #     if event.key == K_LEFT or event.key == K_RIGHT:
+            #         x_move = 0
+            #     if event.key == K_UP or event.key == K_DOWN:
+            #         y_move = 0
 
-        mdlview_matrx = glGetDoublev(GL_MODELVIEW_MATRIX)
-
-        camera_z = mdlview_matrx[3][2]
-
-        cur_x += x_move
-        cur_y += y_move
-
-        # if camera_z <= 0:
-        #     object_passed = True
-
-        # glRotatef(1, 3, 1, 1)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        glTranslatef(x_move, y_move, game_speed)
-       # Enable depth test
+        # Enable depth test
         glEnable(GL_DEPTH_TEST)
         # Accept fragment if it closer to the camera than the former one
         glDepthFunc(GL_LESS)
-        
-        # ground()
 
         for each_cube in cube_dict:
             Cube(cube_dict[each_cube])
 
+        glRotatef(1, 1, 3, 1)
 
-        for each_cube in cube_dict:
-            if camera_z <= cube_dict[each_cube][0][2]:
-                new_max = int(-1*(camera_z-(max_distance * 2)))
-
-                cube_dict[each_cube] = set_vertices(new_max, int(camera_z-max_distance), cur_x, cur_y)
-
-        # Cube_small()
         pygame.display.flip()
-        # pygame.time.wait(10)
-
+        pygame.time.wait(10)
 
 if __name__ == "__main__":
     main()
-    glLoadIdentity() 
     pygame.quit()
     quit()
