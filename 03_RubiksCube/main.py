@@ -95,7 +95,6 @@ def Cube(vertices):
 
 
 
-
 def main():
     pygame.init()
     display = (800,600)
@@ -115,7 +114,11 @@ def main():
             for z in range(3):
                 cube_dict[9*x+3*y+z] = set_vertices(2*(x-1), 2*(y-1), 2*(z-1))
 
-    glRotatef(45, 1, 1, 1)
+
+    x_rot = 0
+    y_rot = 0
+    rotation_speed = 3
+
 
     while True:
         for event in pygame.event.get():
@@ -123,23 +126,27 @@ def main():
                 pygame.quit()
                 sys.exit()
 
-            # if event.type == KEYDOWN:
-            #     if event.key == K_SPACE:
-            #         glRotatef(10, 1, 1, 1)
-            #     if event.key == K_LEFT:
-            #         x_move = direction_speed
-            #     if event.key == K_RIGHT:
-            #         x_move = -direction_speed
-            #     if event.key == K_UP:
-            #         y_move = -direction_speed
-            #     if event.key == K_DOWN:
-            #         y_move = direction_speed
+            if event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    pass
+                if event.key == K_LEFT:
+                    x_rot = -rotation_speed
+                if event.key == K_RIGHT:
+                    x_rot = rotation_speed
+                if event.key == K_UP:
+                    y_rot = -rotation_speed
+                if event.key == K_DOWN:
+                    y_rot = rotation_speed
 
-            # if event.type == KEYUP:
-            #     if event.key == K_LEFT or event.key == K_RIGHT:
-            #         x_move = 0
-            #     if event.key == K_UP or event.key == K_DOWN:
-            #         y_move = 0
+            if event.type == KEYUP:
+                if event.key == K_LEFT or event.key == K_RIGHT:
+                    x_rot = 0
+                if event.key == K_UP or event.key == K_DOWN:
+                    y_rot = 0
+
+        glRotatef(x_rot, 0.0, 1.0, 0.0)
+        glRotatef(y_rot, 1.0, 0.0, 0.0)
+
 
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         # Enable depth test
@@ -150,8 +157,18 @@ def main():
         for each_cube in cube_dict:
             Cube(cube_dict[each_cube])
 
-        glRotatef(1, 1, 3, 1)
 
+        glLineWidth(1)
+        glBegin(GL_LINES)
+        glColor3fv((1,0,0))
+        glVertex3fv((0, 0, 0))
+        glVertex3fv((8, 0, 0))
+        glColor3fv((0,1,0))
+        glVertex3fv((0, 0, 0))
+        glVertex3fv((0, 8, 0))
+        glEnd()
+
+  
         pygame.display.flip()
         pygame.time.wait(10)
 
