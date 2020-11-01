@@ -15,15 +15,19 @@ class Star:
     def __init__(self):
         self.x = random.randint(0, width)
         self.y = random.randint(0, height)
-        self.z  = random.randint(0, width)
-
+        self.z = width
 
     def update(self):
-        pass
+        # pass
+        self.z = self.z - 5
 
     def draw(self, surface):
-        pygame.draw.ellipse(surface, (255, 255, 255), (self.x, self.y, 8, 8))
 
+        # cast to center and back
+        sx = ((self.x - width/2) / self.z) * width + width/2
+        sy = ((self.y - height/2) / self.z) * height + height/2
+
+        pygame.draw.ellipse(surface, (255, 255, 255), (sx, sy, 8, 8))
 
 
 def main():
@@ -44,9 +48,14 @@ def main():
                 sys.exit()
 
         displaysurface.fill((0,0,0))
+
+        # tmpsurface = displaysurface.copy()
+        # tmpsurface.fill((0, 100, 0))
         for star in stars:
             star.update()
             star.draw(displaysurface)
+
+        # displaysurface.blit(tmpsurface, (width/2, height/2))
 
         pygame.display.update()
 
