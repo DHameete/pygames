@@ -1,33 +1,63 @@
 import pygame
+from pygame import gfxdraw
 from pygame.locals import *
 import sys
 import random
+import math
 
 
-width = 800
-height = 600
-n = 100
-
-
+width = 1600
+height = 900
+n = 200
+r_max = 8
+speed = 20
 
 class Star:
 
     def __init__(self):
         self.x = random.randint(0, width)
         self.y = random.randint(0, height)
-        self.z = width
+        self.z = random.randint(0, width)
+
+        self.pz = self.z
 
     def update(self):
         # pass
-        self.z = self.z - 5
+        self.z = self.z - speed
+        if (self.z < 50):
+            self.x = random.randint(0, width)
+            self.y = random.randint(0, height)           
+            self.z = width
+
+            self.pz = self.z
+
 
     def draw(self, surface):
 
-        # cast to center and back
-        sx = ((self.x - width/2) / self.z) * width + width/2
-        sy = ((self.y - height/2) / self.z) * height + height/2
+        # cast to center 
+        sx = ((self.x - width/2) / self.z) * width 
+        sy = ((self.y - height/2) / self.z) * height 
 
-        pygame.draw.ellipse(surface, (255, 255, 255), (sx, sy, 8, 8))
+        # cast back for drawing
+        sx = math.floor(sx + width/2)
+        sy = math.floor(sy + height/2)
+
+        # radius
+        r = math.floor(- (r_max / width) * self.z + r_max)
+
+        # draw star
+        gfxdraw.aacircle(surface, sx, sy, r, (255, 255, 255))
+        gfxdraw.filled_circle(surface, sx, sy, r, (255, 255, 255))
+
+        # calculate previous location
+        psx = math.floor(((self.x - width/2) / self.pz) * width + width/2)
+        psy = math.floor(((self.y - height/2) / self.pz) * height + height/2)
+
+        # draw linne
+        pygame.draw.line(surface, (255, 255, 255), (psx, psy), (sx, sy), 1)
+
+        # set current depth
+        self.pz = (self.z + 2*speed)
 
 
 def main():
@@ -49,13 +79,9 @@ def main():
 
         displaysurface.fill((0,0,0))
 
-        # tmpsurface = displaysurface.copy()
-        # tmpsurface.fill((0, 100, 0))
         for star in stars:
             star.update()
             star.draw(displaysurface)
-
-        # displaysurface.blit(tmpsurface, (width/2, height/2))
 
         pygame.display.update()
 
