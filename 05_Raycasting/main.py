@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-import sys, math
+import sys, math, random
 
 width = 800
 height = 600
@@ -18,16 +18,22 @@ class Vec2D:
         self.y = self.y * s
 
     def normalize(self):
-        n = math.sqrt(self.x * self.x + self.y * self.y)
-        self.x = self.x / n
-        self.y = self.y / n
+        r = math.sqrt(self.x * self.x + self.y * self.y)
+        self.x = self.x / r
+        self.y = self.y / r
+
+    def rotate(self, angle):
+        r = math.sqrt(self.x * self.x + self.y * self.y)
+        self.x = r * math.cos(angle)
+        self.y = r * math.sin(angle)
 
 
 class Ray:
 
-    def __init__(self, x, y):
-        self.pos = Vec2D(x, y)
+    def __init__(self, pos, angle):
+        self.pos = pos
         self.dir = Vec2D(1, 0)
+        self.dir.rotate(angle)
         # self.dir.scale(10)
 
     def lookAt(self, x, y):
@@ -77,6 +83,31 @@ class Wall:
         end = (self.b.x, self.b.y)
         pygame.draw.aaline(surface, WHITE, start, end, 1)
 
+class Particle:
+
+    def __init__(self):
+        self.pos = Vec2D(width/2, height/2)
+        self.rays = []
+
+        for angle in range(0, 360, 10):
+            self.rays.append(Ray(self.pos, math.radians(angle)))
+
+    def show(self, surface):
+        pygame.draw.circle(surface, WHITE, (self.pos.x, self.pos.y), 10)
+        for ray in self.rays:
+            ray.show(surface)
+
+    def look(self, wall, surface):
+        for ray in self.rays:
+            pt = ray.cast(wall)
+            if(pt):
+                pygame.draw.aaline(surface, WHITE, (self.pos.x, self.pos.y), (pt.x, pt.y))
+                pygame.draw.circle(surface, WHITE, (pt.x, pt.y), 4)
+
+    def update(self, x, y):
+        self.pos.x = x
+        self.pos.y = y
+
 
 def main():
 
@@ -87,8 +118,15 @@ def main():
     pygame.display.set_caption("Raycasting")
 
 
-    wall = Wall(500,200,650,400)
-    ray = Ray(100, 300)
+    walls = []
+    for i in range(5):
+        x1 = random.randint(0, width)
+        x2 = random.randint(0, width)
+        y1 = random.randint(0, height)
+        y2 = random.randint(0, height)
+        walls.append(Wall(x1,x2,y1,y2))
+
+    particle = Particle()
 
     # draw
     while True:
@@ -98,16 +136,14 @@ def main():
                 sys.exit()
 
         displaysurface.fill((51, 51, 51))
-        wall.show(displaysurface)
-        ray.show(displaysurface)
-
+        
         (mouseX, mouseY) = pygame.mouse.get_pos()
+        particle.update(mouseX, mouseY)
+        particle.show(displaysurface)
 
-        ray.lookAt(mouseX, mouseY)
-
-        pt = ray.cast(wall)
-        if(pt):
-            pygame.draw.circle(displaysurface, (255, 255, 255), (pt.x, pt.y), 4)
+        for wall in walls:
+            wall.show(displaysurface)
+            particle.look(wall, displaysurface)
 
         pygame.display.update()
 
