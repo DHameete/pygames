@@ -99,6 +99,10 @@ def main():
 
 
     walls = []
+    walls.append(Wall(0,0,width,0))
+    walls.append(Wall(width,0,width,height))
+    walls.append(Wall(width,height,0,height))
+    walls.append(Wall(0,height,0,0))
     for i in range(5):
         x1 = random.randint(0, width)
         x2 = random.randint(0, width)
