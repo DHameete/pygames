@@ -62,7 +62,7 @@ class Particle:
         self.pos = pygame.math.Vector2(width/2, height/2)
         self.rays = []
 
-        for angle in range(0, 360, 10):
+        for angle in range(0, 360, 1):
             self.rays.append(Ray(self.pos, angle))
 
     def show(self, surface):
@@ -70,12 +70,20 @@ class Particle:
         for ray in self.rays:
             ray.show(surface)
 
-    def look(self, wall, surface):
+    def look(self, walls, surface):
         for ray in self.rays:
-            pt = ray.cast(wall)
-            if(pt):
-                pygame.draw.aaline(surface, WHITE, self.pos, pt)
-                pygame.draw.circle(surface, WHITE, pt, 4)
+            closest = None
+            record = math.inf
+            for wall in walls:
+                pt = ray.cast(wall)
+                if(pt):
+                    d = self.pos.distance_to(pt)
+                    if(d < record):
+                        record = d
+                        closest = pt
+            if closest:
+                pygame.draw.aaline(surface, WHITE, self.pos, closest)
+                pygame.draw.circle(surface, WHITE, closest, 4)
 
     def update(self, x, y):
         self.pos.update(x, y)
@@ -112,10 +120,10 @@ def main():
         (mouseX, mouseY) = pygame.mouse.get_pos()
         particle.update(mouseX, mouseY)
         particle.show(displaysurface)
+        particle.look(walls, displaysurface)
 
         for wall in walls:
             wall.show(displaysurface)
-            particle.look(wall, displaysurface)
 
         pygame.display.update()
 
