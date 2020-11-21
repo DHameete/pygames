@@ -6,13 +6,13 @@ YELLOW = (200,200,100)
 
 class Particle:
 
-    def __init__(self, color):
-        self.pos = math.Vector2(0, 0)
+    def __init__(self, color, display):
+        self.pos = math.Vector2(display[0]/2, display[1]/2)
         self.rays = []
         self.color = color
         self.angle = 0
 
-        for angle in range(-30, 30, 1):
+        for angle in range(-30, 31, 1):
             self.rays.append(Ray(self.pos, angle, self.color))
 
 
@@ -36,16 +36,22 @@ class Particle:
                         record = d
                         closest = pt
             if closest:
-                draw.polygon(surface,YELLOW,[prev,closest,self.pos])
+                draw.polygon(surface, YELLOW, [prev, closest, self.pos])
                 # draw.aaline(surface, YELLOW, self.pos, closest)
                 prev = closest
 
 
-    def update(self, x, y, mouse):
+    def update(self, display, dx, dy, mouse):
         mouseX = mouse[0]
         mouseY = mouse[1]
 
         self.angle = degrees(atan2(-(mouseY-self.pos.y),(mouseX-self.pos.x)))
         
+        x = self.pos.x + dx 
+        y = self.pos.y + dy 
+        if (x < 0 or x > display[0]):
+            x = x - dx
+        if (y < 0 or y > display[1]):
+            y = y - dy            
         self.pos.update(x, y)
             

@@ -5,7 +5,7 @@ class Ray:
     def __init__(self, pos, angle, color):
         self.pos = pos
         self.dir = math.Vector2(1, 0)
-        self.angle = angle
+        self.angle = 0
         self.dir = self.dir.rotate(angle)
         self.color = color
 
