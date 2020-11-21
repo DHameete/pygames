@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import QUIT
-import sys, random
+import sys, random, math
 
 from wall import Wall
 from particle import Particle
@@ -48,11 +48,11 @@ def main():
         displaysurface.fill((51, 51, 51))
         
         # Set particle position
-        (mouseX, mouseY) = pygame.mouse.get_pos()
-        particle.update(mouseX, mouseY)
-
+        mouse = pygame.mouse.get_pos()
+        particle.update(width/3, height/6, mouse)
+        
         # Draw particle and rays
-        particle.look(walls, displaysurface)
+        particle.look(displaysurface, walls)
         particle.show(displaysurface)
 
         # Draw walls
