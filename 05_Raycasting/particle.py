@@ -7,7 +7,7 @@ YELLOW = (200,200,100)
 class Particle:
 
     def __init__(self, color, display):
-        self.pos = math.Vector2(display[0]/2, display[1]/2)
+        self.pos = math.Vector2(display[0]/3, display[1]/3)
         self.rays = []
         self.color = color
         self.angle = 0
@@ -42,11 +42,12 @@ class Particle:
 
 
     def update(self, display, dx, dy, mouse):
+        # Rotate
         mouseX = mouse[0]
         mouseY = mouse[1]
-
         self.angle = degrees(atan2(-(mouseY-self.pos.y),(mouseX-self.pos.x)))
         
+        # Translate
         x = self.pos.x + dx 
         y = self.pos.y + dy 
         if (x < 0 or x > display[0]):

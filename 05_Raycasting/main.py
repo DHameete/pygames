@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 import sys, random, math
+from noise import pnoise1
 
 from wall import Wall
 from particle import Particle
@@ -37,9 +38,20 @@ def main():
     # Initialize particle
     particle = Particle(WHITE,display)
 
+    # Initialize movement variables
     x_move = 0
     y_move = 0
     direction_speed = 3
+    buttons_pressed = 0
+
+    # Initialize noise variables
+    xoff = 0
+    yoff = 0
+    xamp = random.randint(2,6)
+    yamp = random.randint(2,6)
+    dx = random.randint(5,15)/1000
+    dy = random.randint(5,15)/1000
+
 
     # draw-loop
     while True:
@@ -48,22 +60,34 @@ def main():
                 pygame.quit()
                 sys.exit()
 
+            # Move by keyboard
             if event.type == KEYDOWN:
                 if event.key in {K_LEFT, K_a}:
                     x_move = -direction_speed
+                    buttons_pressed += 1
                 if event.key in {K_RIGHT, K_d}:
                     x_move = direction_speed
+                    buttons_pressed += 1
                 if event.key in {K_UP, K_w}:
                     y_move = -direction_speed
+                    buttons_pressed += 1
                 if event.key in {K_DOWN, K_s}:
                     y_move = direction_speed
-
+                    buttons_pressed += 1
             if event.type == KEYUP:
                 if event.key in {K_LEFT, K_a, K_RIGHT, K_d}:
                     x_move = 0
+                    buttons_pressed -= 1
                 if event.key in {K_UP, K_w, K_DOWN, K_s}:
                     y_move = 0
-
+                    buttons_pressed -= 1
+        
+        # Perlin noise
+        if(not buttons_pressed):
+            xoff += dx
+            yoff += dy
+            x_move = pnoise1(xoff, 1) * xamp
+            y_move = pnoise1(yoff, 1) * yamp
 
         # Draw background
         displaysurface.fill((51, 51, 51))
