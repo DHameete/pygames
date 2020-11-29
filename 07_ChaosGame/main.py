@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-import sys, time
+import sys, time, math
 import random
 
 
@@ -15,18 +15,36 @@ YELLOW = (255, 255, 0)
 def init_chaos():
     points = []
 
-    for _ in range(3):
+    for _ in range(2):
         x = random.randint(0, width)
         y = random.randint(0, height)
         points.append(pygame.Vector2(x,y))
 
     diff_vec = points[1] - points[0]
     diff_vec.rotate_ip(60)
-    points[2] = points[0] + diff_vec
+    points.append(points[0] + diff_vec)
     
     if points[2].x < 0 or points[2].x > width or points[2].y < 0 or points[2].y > height:
         diff_vec.rotate_ip(-120)
         points[2] = points[0] + diff_vec
+
+    return points
+
+
+def init_chaos_mid():
+    points = []
+
+    r = random.randint(height/6, height/2)
+    x_mid = random.randint(r, width - r)
+    y_mid = random.randint(r, height - r)
+    a = random.randint(0,360)
+
+    for _ in range(3):
+        x = r * math.cos(a * math.pi / 180) + x_mid
+        y = r * math.sin(a * math.pi / 180) + y_mid
+        points.append(pygame.Vector2(x,y))
+
+        a += 120
 
     return points
 
@@ -38,16 +56,18 @@ def main():
     displaysurface = pygame.display.set_mode(display)
     pygame.display.set_caption("Chaos game")
 
-    points = init_chaos()
+    # Draw background
+    displaysurface.fill((51, 51, 51))
 
+    # Initialize shape 
+    points = init_chaos_mid()
+
+    # Initialize starting position
     x_pos = random.randint(0, width)
     y_pos = random.randint(0, height)
     pos = pygame.Vector2(x_pos, y_pos)
     
     clr = BLUE
-    
-    # Draw background
-    displaysurface.fill((51, 51, 51))
     now = time.time()
 
     # loop
@@ -58,12 +78,13 @@ def main():
                 sys.exit()
 
             if event.type == KEYDOWN:
-                points = init_chaos()
+                points = init_chaos_mid()
                 displaysurface.fill((51, 51, 51))
                 now = time.time()
 
+        # Keep track of time
         if time.time() - now > 3:
-            points = init_chaos()
+            points = init_chaos_mid()
             displaysurface.fill((51, 51, 51))
             now = time.time() 
 
@@ -71,10 +92,7 @@ def main():
         for point in points:
             pygame.draw.circle(displaysurface, WHITE, point, 3)
 
-        # Update display
-        pygame.display.update()
-
-
+        # Draw new set of points
         for _ in range(50):
             r = random.randint(0,3)
 
@@ -89,6 +107,8 @@ def main():
                 clr = ORANGE
             pygame.draw.circle(displaysurface, clr, pos, 2)
 
+        # Update display
+        pygame.display.update()
 
 if __name__ == "__main__":
     main()
