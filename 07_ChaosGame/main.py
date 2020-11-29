@@ -12,6 +12,8 @@ BLUE = (0, 255, 255)
 ORANGE = (255, 128, 0)
 YELLOW = (255, 255, 0)
 
+COLORS = [BLUE, ORANGE, YELLOW]
+
 def init_chaos():
     points = []
 
@@ -94,17 +96,11 @@ def main():
 
         # Draw new set of points
         for _ in range(50):
-            r = random.randint(0,3)
+            a = random.choice(range(len(points)))
+            
+            pos = pos.lerp(points[a],0.5)
+            clr = COLORS[a]
 
-            if r == 0:
-                pos = pos.lerp(points[0],0.5)
-                clr = BLUE
-            elif r == 1:
-                pos = pos.lerp(points[1],0.5)
-                clr = YELLOW
-            else:
-                pos = pos.lerp(points[2],0.5)
-                clr = ORANGE
             pygame.draw.circle(displaysurface, clr, pos, 2)
 
         # Update display
