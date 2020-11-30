@@ -14,6 +14,8 @@ YELLOW = (255, 255, 0)
 
 COLORS = [BLUE, ORANGE, YELLOW]
 
+n = 5
+
 def init_chaos():
     points = []
 
@@ -39,14 +41,14 @@ def init_chaos_mid():
     r = random.randint(height/6, height/2)
     x_mid = random.randint(r, width - r)
     y_mid = random.randint(r, height - r)
-    a = random.randint(0,360)
+    phi = random.randint(0,360)
 
-    for _ in range(3):
-        x = r * math.cos(a * math.pi / 180) + x_mid
-        y = r * math.sin(a * math.pi / 180) + y_mid
+    for _ in range(n):
+        x = r * math.cos(phi * math.pi / 180) + x_mid
+        y = r * math.sin(phi * math.pi / 180) + y_mid
         points.append(pygame.Vector2(x,y))
 
-        a += 120
+        phi += (360 / n)
 
     return points
 
@@ -72,6 +74,10 @@ def main():
     clr = BLUE
     now = time.time()
 
+    prevprev = 0
+    prev = 0
+    a = prev
+
     # loop
     while True:
         for event in pygame.event.get():
@@ -95,13 +101,24 @@ def main():
             pygame.draw.circle(displaysurface, WHITE, point, 3)
 
         # Draw new set of points
-        for _ in range(50):
+        for _ in range(100):
             a = random.choice(range(len(points)))
-            
-            pos = pos.lerp(points[a],0.5)
-            clr = COLORS[a]
+            # while a == prev:
+            #     a = random.choice(range(len(points)))
+            # while a == (prev+1)%n or a == (prev-1)%n:
+            #     a = random.choice(range(len(points)))
+            # while a == (prev+1)%n or a == (prev-1)%n:
+            #     a = random.choice(range(len(points)))
+            while (a == (prev+1)%n or a == (prev-1)%n) and (prev == prevprev):
+                a = random.choice(range(len(points)))
 
-            pygame.draw.circle(displaysurface, clr, pos, 2)
+            pos = pos.lerp(points[a],0.5)
+            # clr = COLORS[a % 3]
+
+            pygame.draw.circle(displaysurface, clr, pos, 1)
+
+            prevprev = prev
+            prev = a
 
         # Update display
         pygame.display.update()
