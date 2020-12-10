@@ -11,8 +11,10 @@ WHITE = (255, 255, 255)
 BLUE = (0, 255, 255)
 ORANGE = (255, 128, 0)
 YELLOW = (255, 255, 0)
+GREEN = (128, 255, 0)
+PURPLE = (255, 0, 255)
 
-COLORS = [BLUE, ORANGE, YELLOW]
+COLORS = [BLUE, ORANGE, YELLOW, GREEN, PURPLE]
 
 
 def init_chaos():
@@ -78,14 +80,23 @@ def main():
     prev = 0
     a = prev
 
-
     # Font
     font = pygame.font.SysFont('Arial', 25)
      
     # button 1
-    button = pygame.Rect(100,height-50,100,25)
-    text = font.render('Hello!', True, (0,0,0))
-    text_rect = text.get_rect(center=button.center)
+    button1 = pygame.Rect(100,height-50,100,25)
+    text1 = font.render('Triangle!', True, (0,0,0))
+    text_rect1 = text1.get_rect(center=button1.center)
+
+    # button 2
+    button2 = pygame.Rect(250,height-50,100,25)
+    text2 = font.render('Square!', True, (0,0,0))
+    text_rect2 = text2.get_rect(center=button2.center)
+
+    # button 3
+    button3 = pygame.Rect(400,height-50,100,25)
+    text3 = font.render('Star!', True, (0,0,0))
+    text_rect3 = text3.get_rect(center=button3.center)
 
     # loop
     while True:
@@ -93,16 +104,28 @@ def main():
             if event.type == QUIT:
                 return False
 
-            if event.type == KEYDOWN:
-                points = init_chaos_mid()
-                displaysurface.fill((51, 51, 51))
-                now = time.time()
+            # if event.type == KEYDOWN:
+            #     points = init_chaos_mid()
+            #     displaysurface.fill((51, 51, 51))
+            #     now = time.time()
 
             if event.type == MOUSEBUTTONDOWN:
                 mouse_pos = event.pos
 
-                if button.collidepoint(mouse_pos):
+                if button1.collidepoint(mouse_pos):
                     n = 3
+                    points = init_chaos_mid(n)
+                    displaysurface.fill((51, 51, 51))
+                    now = time.time() 
+
+                if button2.collidepoint(mouse_pos):
+                    n = 4
+                    points = init_chaos_mid(n)
+                    displaysurface.fill((51, 51, 51))
+                    now = time.time() 
+
+                if button3.collidepoint(mouse_pos):
+                    n = 5
                     points = init_chaos_mid(n)
                     displaysurface.fill((51, 51, 51))
                     now = time.time() 
@@ -126,25 +149,27 @@ def main():
             elif n == 4:
                 while a == prev:
                     a = random.choice(range(len(points)))
-            # while a == (prev+1)%n or a == (prev-1)%n:
-            #     a = random.choice(range(len(points)))
-            # while a == (prev+1)%n or a == (prev-1)%n:
-            #     a = random.choice(range(len(points)))
             elif n == 5:
                 while (a == (prev+1)%n or a == (prev-1)%n) and (prev == prevprev):
                     a = random.choice(range(len(points)))
         
 
             pos = pos.lerp(points[a],0.5)
-            # clr = COLORS[a % 3]
+            clr = COLORS[a]
 
             pygame.draw.circle(displaysurface, clr, pos, 1)
 
             prevprev = prev
             prev = a
 
-        pygame.draw.rect(displaysurface, (205, 205, 0), button)
-        displaysurface.blit(text, text_rect)
+        pygame.draw.rect(displaysurface, (205, 205, 0), button1)
+        displaysurface.blit(text1, text_rect1)
+
+        pygame.draw.rect(displaysurface, (205, 205, 0), button2)
+        displaysurface.blit(text2, text_rect2)
+
+        pygame.draw.rect(displaysurface, (205, 205, 0), button3)
+        displaysurface.blit(text3, text_rect3)
 
         # Update display
         pygame.display.update()
