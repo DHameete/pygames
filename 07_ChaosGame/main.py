@@ -14,7 +14,6 @@ YELLOW = (255, 255, 0)
 
 COLORS = [BLUE, ORANGE, YELLOW]
 
-n = 5
 
 def init_chaos():
     points = []
@@ -35,7 +34,7 @@ def init_chaos():
     return points
 
 
-def init_chaos_mid():
+def init_chaos_mid(n):
     points = []
 
     r = random.randint(height/6, height/2)
@@ -64,7 +63,8 @@ def main():
     displaysurface.fill((51, 51, 51))
 
     # Initialize shape 
-    points = init_chaos_mid()
+    n = 5
+    points = init_chaos_mid(n)
 
     # Initialize starting position
     x_pos = random.randint(0, width)
@@ -78,21 +78,38 @@ def main():
     prev = 0
     a = prev
 
+
+    # Font
+    font = pygame.font.SysFont('Arial', 25)
+     
+    # button 1
+    button = pygame.Rect(100,height-50,100,25)
+    text = font.render('Hello!', True, (0,0,0))
+    text_rect = text.get_rect(center=button.center)
+
     # loop
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
+                return False
 
             if event.type == KEYDOWN:
                 points = init_chaos_mid()
                 displaysurface.fill((51, 51, 51))
                 now = time.time()
 
+            if event.type == MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+
+                if button.collidepoint(mouse_pos):
+                    n = 3
+                    points = init_chaos_mid(n)
+                    displaysurface.fill((51, 51, 51))
+                    now = time.time() 
+
         # Keep track of time
         if time.time() - now > 3:
-            points = init_chaos_mid()
+            points = init_chaos_mid(n)
             displaysurface.fill((51, 51, 51))
             now = time.time() 
 
@@ -102,15 +119,21 @@ def main():
 
         # Draw new set of points
         for _ in range(100):
+
             a = random.choice(range(len(points)))
-            # while a == prev:
-            #     a = random.choice(range(len(points)))
-            # while a == (prev+1)%n or a == (prev-1)%n:
-            #     a = random.choice(range(len(points)))
-            # while a == (prev+1)%n or a == (prev-1)%n:
-            #     a = random.choice(range(len(points)))
-            while (a == (prev+1)%n or a == (prev-1)%n) and (prev == prevprev):
+            if n == 3:
                 a = random.choice(range(len(points)))
+            elif n == 4:
+                while a == prev:
+                    a = random.choice(range(len(points)))
+            # while a == (prev+1)%n or a == (prev-1)%n:
+            #     a = random.choice(range(len(points)))
+            # while a == (prev+1)%n or a == (prev-1)%n:
+            #     a = random.choice(range(len(points)))
+            elif n == 5:
+                while (a == (prev+1)%n or a == (prev-1)%n) and (prev == prevprev):
+                    a = random.choice(range(len(points)))
+        
 
             pos = pos.lerp(points[a],0.5)
             # clr = COLORS[a % 3]
@@ -119,6 +142,9 @@ def main():
 
             prevprev = prev
             prev = a
+
+        pygame.draw.rect(displaysurface, (205, 205, 0), button)
+        displaysurface.blit(text, text_rect)
 
         # Update display
         pygame.display.update()
