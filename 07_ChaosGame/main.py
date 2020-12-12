@@ -64,6 +64,9 @@ def main():
     # Draw background
     displaysurface.fill((51, 51, 51))
 
+    # Font
+    font = pygame.font.SysFont('Arial', 25)
+    
     # Initialize shape 
     n = 5
     points = init_chaos_mid(n)
@@ -80,8 +83,6 @@ def main():
     prev = 0
     a = prev
 
-    # Font
-    font = pygame.font.SysFont('Arial', 25)
      
     # button 1
     button1 = pygame.Rect(100,height-50,100,25)
@@ -140,6 +141,11 @@ def main():
         for point in points:
             pygame.draw.circle(displaysurface, WHITE, point, 3)
 
+        # temporary surface
+        surface2 = pygame.Surface((width,height))
+        surface2.set_colorkey((0,0,0))
+        surface2.set_alpha(100)
+
         # Draw new set of points
         for _ in range(100):
 
@@ -157,10 +163,12 @@ def main():
             pos = pos.lerp(points[a],0.5)
             clr = COLORS[a]
 
-            pygame.draw.circle(displaysurface, clr, pos, 1)
+            pygame.draw.circle(surface2, clr, pos, 1)
 
             prevprev = prev
             prev = a
+            
+        displaysurface.blit(surface2, (0,0))
 
         pygame.draw.rect(displaysurface, (205, 205, 0), button1)
         displaysurface.blit(text1, text_rect1)
