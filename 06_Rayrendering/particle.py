@@ -1,5 +1,5 @@
 from pygame import math, draw
-from math import inf, degrees, atan2
+from math import inf, degrees, atan2, cos, radians
 from ray import Ray
 
 YELLOW = (200,200,100)
@@ -12,8 +12,8 @@ class Particle:
         self.color = color
         self.angle = 0
 
-        for angle in range(-30, 31, 1):
-            self.rays.append(Ray(self.pos, angle, YELLOW))
+        for angle in range(-300, 301, 1):
+            self.rays.append(Ray(self.pos, angle/10, YELLOW))
 
 
     def show(self, surface):
@@ -33,6 +33,7 @@ class Particle:
                 pt = ray.cast(wall)
                 if(pt):
                     d = self.pos.distance_to(pt)
+                    d = d * cos(radians(ray.initangle)) 
                     if(d < record):
                         record = d
                         closest = pt

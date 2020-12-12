@@ -25,10 +25,10 @@ def main():
 
     # Initialize boundaries
     walls = []
-    # walls.append(Wall((-1,-1),(width,-1),BLUE))
-    # walls.append(Wall((width,-1),(width,height),BLUE))
-    # walls.append(Wall((width,height),(-1,height),BLUE))
-    # walls.append(Wall((-1,height),(-1,-1),BLUE))
+    walls.append(Wall((-1,-1),(width,-1),BLUE))
+    walls.append(Wall((width,-1),(width,height),BLUE))
+    walls.append(Wall((width,height),(-1,height),BLUE))
+    walls.append(Wall((-1,height),(-1,-1),BLUE))
 
     # Initialize walls
     for _ in range(5):
@@ -101,14 +101,18 @@ def main():
         scene = particle.look(displaysurface, walls)
         particle.show(displaysurface)
 
+        distProjPlane = (width / 50) / math.tan(math.radians(60) / 2); # projection plane is required for fisheye fix
+
+        pygame.draw.rect(displaysurface,(0,50,200),(width,0,width,height/2))
+        pygame.draw.rect(displaysurface,(0,128,0),(width,height/2,width,height/2))
+
         # Ray randering
-        w = math.floor(width / len(scene))
-        for ind, part in enumerate(scene):
-            part = max(min(part,width), 0)
-            clr = math.floor(-(255/width)*part + 255)
-            h = math.floor(-(height/width)*part + height)
-            if h > 0:
-                pygame.draw.rect(displaysurface, clr, (width + ind * w, (height-h)/2, w, h))
+        w = (width / len(scene))
+        for ind, line in enumerate(scene):
+            line = max(min(line,width), 0)
+            clr = math.floor((205/(width*width))*(line-width)*(line-width) + 50) # y = a * (x-h)^2 + k
+            h = (width / (line+1)) * distProjPlane
+            pygame.draw.rect(displaysurface, (clr,clr,clr), (width + ind * w, (height-h)/2, w, h),3)
 
         # Draw walls
         for wall in walls:
