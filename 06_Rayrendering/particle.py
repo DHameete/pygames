@@ -13,15 +13,16 @@ class Particle:
         self.angle = 0
 
         for angle in range(-30, 31, 1):
-            self.rays.append(Ray(self.pos, angle, self.color))
+            self.rays.append(Ray(self.pos, angle, YELLOW))
 
 
     def show(self, surface):
-        draw.circle(surface, self.color, self.pos, 10)
         for ray in self.rays:
             ray.show(surface)
+        draw.circle(surface, self.color, self.pos, 10)
 
     def look(self, surface, walls):
+        scene = []
         prev = self.rays[0].pos
         for ray in self.rays:
             ray.rotate(self.angle)
@@ -39,7 +40,10 @@ class Particle:
                 draw.polygon(surface, YELLOW, [prev, closest, self.pos])
                 # draw.aaline(surface, YELLOW, self.pos, closest)
                 prev = closest
-
+            
+            scene.append(record)
+            
+        return scene
 
     def update(self, display, dx, dy, mouse):
         # Rotate
@@ -50,7 +54,7 @@ class Particle:
         # Translate
         x = self.pos.x + dx 
         y = self.pos.y + dy 
-        if (x < 0 or x > display[0]):
+        if (x < 0 or x > display[0]/2):
             x = x - dx
         if (y < 0 or y > display[1]):
             y = y - dy            

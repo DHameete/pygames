@@ -15,7 +15,7 @@ class Ray:
         self.dir.normalize()
 
     def show(self, surface):
-        end = self.pos + 10 * self.dir
+        end = self.pos + 30 * self.dir
         draw.aaline(surface, self.color, self.pos, end, 1)
 
     def cast(self, wall):

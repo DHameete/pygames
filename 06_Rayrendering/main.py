@@ -18,16 +18,17 @@ def main():
 
     # setup
     pygame.init()
-    display = (width, height)
+    display = (2 * width, height)
     displaysurface = pygame.display.set_mode(display)
-    pygame.display.set_caption("Raycasting")
+    pygame.display.set_caption("Rayrendering")
+
 
     # Initialize boundaries
     walls = []
-    walls.append(Wall((-1,-1),(width,-1),BLUE))
-    walls.append(Wall((width,-1),(width,height),BLUE))
-    walls.append(Wall((width,height),(-1,height),BLUE))
-    walls.append(Wall((-1,height),(-1,-1),BLUE))
+    # walls.append(Wall((-1,-1),(width,-1),BLUE))
+    # walls.append(Wall((width,-1),(width,height),BLUE))
+    # walls.append(Wall((width,height),(-1,height),BLUE))
+    # walls.append(Wall((-1,height),(-1,-1),BLUE))
 
     # Initialize walls
     for _ in range(5):
@@ -86,8 +87,8 @@ def main():
         if(not buttons_pressed):
             xoff += dx
             yoff += dy
-            x_move = pnoise1(xoff, 1) * xamp
-            y_move = pnoise1(yoff, 1) * yamp
+            # x_move = pnoise1(xoff, 1) * xamp
+            # y_move = pnoise1(yoff, 1) * yamp
 
         # Draw background
         displaysurface.fill((51, 51, 51))
@@ -97,12 +98,24 @@ def main():
         particle.update(display, x_move, y_move, mouse)
 
         # Draw particle and rays
-        particle.look(displaysurface, walls)
+        scene = particle.look(displaysurface, walls)
         particle.show(displaysurface)
+
+        # Ray randering
+        w = math.floor(width / len(scene))
+        for ind, part in enumerate(scene):
+            part = max(min(part,width), 0)
+            clr = math.floor(-(255/width)*part + 255)
+            h = math.floor(-(height/width)*part + height)
+            if h > 0:
+                pygame.draw.rect(displaysurface, clr, (width + ind * w, (height-h)/2, w, h))
 
         # Draw walls
         for wall in walls:
             wall.show(displaysurface)
+
+        # In between boundary
+        pygame.draw.aaline(displaysurface, BLUE, (width,0), (width,height), 1)
 
         # Update display
         pygame.display.update()
