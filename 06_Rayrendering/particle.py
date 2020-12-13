@@ -1,5 +1,5 @@
 from pygame import math, draw
-from math import inf, degrees, atan2, cos, radians
+from math import inf, degrees, atan2, sin, cos, radians
 from ray import Ray
 
 YELLOW = (200,200,100)
@@ -46,15 +46,13 @@ class Particle:
             
         return scene
 
-    def update(self, display, dx, dy, mouse):
+    def update(self, display, dx, dy, da):
         # Rotate
-        mouseX = mouse[0]
-        mouseY = mouse[1]
-        self.angle = degrees(atan2(-(mouseY-self.pos.y),(mouseX-self.pos.x)))
+        self.angle = self.angle + da
         
         # Translate
-        x = self.pos.x + dx 
-        y = self.pos.y + dy 
+        x = self.pos.x + dy * cos(radians(self.angle))
+        y = self.pos.y - dy * sin(radians(self.angle))
         if (x < 0 or x > display[0]):
             x = x - dx
         if (y < 0 or y > display[1]):

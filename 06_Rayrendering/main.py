@@ -42,7 +42,9 @@ def main():
     # Initialize movement variables
     x_move = 0
     y_move = 0
+    rotate = 0
     direction_speed = 3
+    rotation_speed = 3
     buttons_pressed = 0
 
     # Initialize noise variables
@@ -63,26 +65,34 @@ def main():
 
             # Move by keyboard
             if event.type == KEYDOWN:
-                if event.key in {K_LEFT, K_a}:
-                    x_move = -direction_speed
-                    buttons_pressed += 1
-                if event.key in {K_RIGHT, K_d}:
-                    x_move = direction_speed
-                    buttons_pressed += 1
+                # if event.key in {K_q}:
+                #     x_move = -direction_speed
+                #     buttons_pressed += 1
+                # if event.key in {K_e}:
+                #     x_move = direction_speed
+                #     buttons_pressed += 1
                 if event.key in {K_UP, K_w}:
-                    y_move = -direction_speed
-                    buttons_pressed += 1
-                if event.key in {K_DOWN, K_s}:
                     y_move = direction_speed
                     buttons_pressed += 1
+                if event.key in {K_DOWN, K_s}:
+                    y_move = -direction_speed
+                    buttons_pressed += 1
+                if event.key in {K_LEFT, K_a}:
+                    rotate = rotation_speed
+                    buttons_pressed += 1
+                if event.key in {K_RIGHT, K_d}:
+                    rotate = -rotation_speed
+                    buttons_pressed += 1
             if event.type == KEYUP:
-                if event.key in {K_LEFT, K_a, K_RIGHT, K_d}:
-                    x_move = 0
-                    buttons_pressed -= 1
+                # if event.key in {K_q, K_e}:
+                #     x_move = 0
+                #     buttons_pressed -= 1
                 if event.key in {K_UP, K_w, K_DOWN, K_s}:
                     y_move = 0
                     buttons_pressed -= 1
-        
+                if event.key in {K_LEFT, K_a, K_RIGHT, K_d}:
+                    rotate = 0
+                    buttons_pressed -= 1
         # Perlin noise
         if(not buttons_pressed):
             xoff += dx
@@ -95,9 +105,9 @@ def main():
         
         # Set particle position
         mouse = pygame.mouse.get_pos()
-        particle.update(display, x_move, y_move, mouse)
+        particle.update(display, x_move, y_move, rotate)
 
-        # Draw particle and rays
+        # Calculate distance to walls
         scene = particle.look(displaysurface, walls)
 
         distProjPlane = (width / 50) / math.tan(math.radians(60) / 2); # projection plane is required for fisheye fix
@@ -110,11 +120,13 @@ def main():
         for ind, line in enumerate(scene):
             line = max(min(line,width), 0)
             clr = math.floor((205/(width*width))*(line-width)*(line-width) + 50) # y = a * (x-h)^2 + k
-            h = (width / (line+1)) * distProjPlane
+            line_min = max(line,30)
+            h = (width / line_min) * distProjPlane
             pygame.draw.rect(displaysurface, (clr,clr,clr), (ind * w, (height-h)/2, w, h),3)
 
         pygame.draw.rect(displaysurface, (51,51,51), (0,0,width/4, height/4))
         
+        # Draw particle and rays
         particle.show(displaysurface)
 
         # Draw walls
