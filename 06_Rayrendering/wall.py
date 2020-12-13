@@ -8,4 +8,4 @@ class Wall:
         self.color = color
 
     def show(self, surface):
-        draw.aaline(surface, self.color, self.a, self.b, 1)
+        draw.aaline(surface, self.color, self.a/4+(1,1), self.b/4+(1,1), 1)

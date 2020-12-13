@@ -18,7 +18,7 @@ def main():
 
     # setup
     pygame.init()
-    display = (2 * width, height)
+    display = (width, height)
     displaysurface = pygame.display.set_mode(display)
     pygame.display.set_caption("Rayrendering")
 
@@ -99,27 +99,27 @@ def main():
 
         # Draw particle and rays
         scene = particle.look(displaysurface, walls)
-        particle.show(displaysurface)
 
         distProjPlane = (width / 50) / math.tan(math.radians(60) / 2); # projection plane is required for fisheye fix
 
-        pygame.draw.rect(displaysurface,(0,50,200),(width,0,width,height/2))
-        pygame.draw.rect(displaysurface,(0,128,0),(width,height/2,width,height/2))
+        pygame.draw.rect(displaysurface,(0,50,200),(0,0,width,height/2))
+        pygame.draw.rect(displaysurface,(0,128,0),(0,height/2,width,height/2))
 
-        # Ray randering
+        # Ray rendering
         w = (width / len(scene))
         for ind, line in enumerate(scene):
             line = max(min(line,width), 0)
             clr = math.floor((205/(width*width))*(line-width)*(line-width) + 50) # y = a * (x-h)^2 + k
             h = (width / (line+1)) * distProjPlane
-            pygame.draw.rect(displaysurface, (clr,clr,clr), (width + ind * w, (height-h)/2, w, h),3)
+            pygame.draw.rect(displaysurface, (clr,clr,clr), (ind * w, (height-h)/2, w, h),3)
+
+        pygame.draw.rect(displaysurface, (51,51,51), (0,0,width/4, height/4))
+        
+        particle.show(displaysurface)
 
         # Draw walls
         for wall in walls:
             wall.show(displaysurface)
-
-        # In between boundary
-        pygame.draw.aaline(displaysurface, BLUE, (width,0), (width,height), 1)
 
         # Update display
         pygame.display.update()

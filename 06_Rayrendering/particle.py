@@ -19,7 +19,7 @@ class Particle:
     def show(self, surface):
         for ray in self.rays:
             ray.show(surface)
-        draw.circle(surface, self.color, self.pos, 10)
+        draw.circle(surface, self.color, self.pos/4, 6)
 
     def look(self, surface, walls):
         scene = []
@@ -55,7 +55,7 @@ class Particle:
         # Translate
         x = self.pos.x + dx 
         y = self.pos.y + dy 
-        if (x < 0 or x > display[0]/2):
+        if (x < 0 or x > display[0]):
             x = x - dx
         if (y < 0 or y > display[1]):
             y = y - dy            
