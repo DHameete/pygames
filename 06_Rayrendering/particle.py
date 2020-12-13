@@ -12,6 +12,7 @@ class Particle:
         self.color = color
         self.angle = 0
 
+        # Angle between -30 and 30 degrees with 0.1 degree accuracy
         for angle in range(-300, 301, 1):
             self.rays.append(Ray(self.pos, angle/10, YELLOW))
 
@@ -38,6 +39,7 @@ class Particle:
                         record = d
                         closest = pt
             if closest:
+                # Draw ray
                 draw.polygon(surface, YELLOW, [prev, closest, self.pos])
                 # draw.aaline(surface, YELLOW, self.pos, closest)
                 prev = closest
@@ -46,16 +48,20 @@ class Particle:
             
         return scene
 
-    def update(self, display, dx, dy, da):
+    def update(self, display, dm, da):
         # Rotate
         self.angle = self.angle + da
         
         # Translate
-        x = self.pos.x + dy * cos(radians(self.angle))
-        y = self.pos.y - dy * sin(radians(self.angle))
+        x = self.pos.x + dm * cos(radians(self.angle))
+        y = self.pos.y - dm * sin(radians(self.angle))
+
+        # Check bound
         if (x < 0 or x > display[0]):
-            x = x - dx
+            x = x - dm * cos(radians(self.angle))
         if (y < 0 or y > display[1]):
-            y = y - dy            
+            y = y + dm * sin(radians(self.angle))         
+
+        # Update position
         self.pos.update(x, y)
             
