@@ -17,7 +17,7 @@ class Spot:
         self.h = 0
 
         self.wall = False
-        if randint(0,10) < 3:
+        if randint(0,10) < 4:
             self.wall = True
 
 

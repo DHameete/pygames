@@ -6,8 +6,8 @@ from settings import *
 from grid import Grid
 
 def heuristic(a, b):
-    # d = math.sqrt( (a.r - b.r)**2 + (a.c - b.c)**2 )
-    d = abs(a.r-b.r) + abs(a.c-b.c)
+    d = math.sqrt( (a.r - b.r)**2 + (a.c - b.c)**2 )
+    # d = abs(a.r-b.r) + abs(a.c-b.c)
     return d
 
 
@@ -83,17 +83,23 @@ def main():
                     if neighbor.wall:
                         continue
 
-                    tempG = current.g + 1
+                    # tempG = current.g + 1
+                    tempG = current.g + heuristic(current,neighbor)
+                    newPath = False
                     if neighbor in openSets:
                         if tempG < neighbor.g:
                             neighbor.g = tempG
+                            newPath = True
                     else:
                         neighbor.g = tempG
+                        newPath = True
                         openSets.append(neighbor)
 
-                    neighbor.h = heuristic(neighbor,end)
-                    neighbor.f = neighbor.g + neighbor.h
-                    neighbor.previous = current
+                    if newPath:
+                        neighbor.h = heuristic(neighbor,end)
+                        neighbor.f = neighbor.g + neighbor.h
+                        neighbor.previous = current
+
             else:
                 # no solution
                 running = False
