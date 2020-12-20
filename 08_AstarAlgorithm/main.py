@@ -5,6 +5,10 @@ import sys, time, math
 from settings import *
 from grid import Grid
 
+def heuristic(a, b):
+    # d = math.sqrt( (a.r - b.r)**2 + (a.c - b.c)**2 )
+    d = abs(a.r-b.r) + abs(a.c-b.c)
+    return d
 
 
 def main():
@@ -23,7 +27,7 @@ def main():
 
 
     rows = 5
-    cols = 6
+    cols = 5
     
 
     # Making 2D-grid
@@ -34,11 +38,13 @@ def main():
 
     openSets = []
     closedSets = []
-
+    
     start = grid.spots[0][0]
-    end = grid.spots[-1][-1]
+    end = grid.spots[-2][-3]
 
     openSets.append(start)
+
+    running = True
 
     # loop
     while True:
@@ -46,40 +52,64 @@ def main():
             if event.type == QUIT:
                 return False
         
-        if (len(openSets) > 0):
-            current = openSets[0]
-        
-            for open in openSets:
-                if open.f < current.f:
-                    current = open
+        while running:
+            if (len(openSets) > 0):
+                current = openSets[0]
+            
+                for open in openSets:
+                    if open.f < current.f:
+                        current = open
 
 
-            if current == end:
-                print("DONE!")
+                if current == end:
+                    running = False
+                    print("DONE!")
 
-            openSets.remove(current)
-            closedSets.append(current)
+                openSets.remove(current)
+                closedSets.append(current)
 
-            neighbors = current.neighbors
-            print(neighbors)
+                neighbors = current.neighbors
+                for neighbor in neighbors:
+                    if neighbor in closedSets:
+                        continue
+                    
+                    tempG = current.g + 1
+                    if neighbor in openSets:
+                        if tempG < neighbor.g:
+                            neighbor.g = tempG
+                    else:
+                        neighbor.g = tempG
+                        openSets.append(neighbor)
 
-        else:
-            # no solution
-            pass
-            # print("ELSE")
+                    neighbor.h = heuristic(neighbor,end)
+                    neighbor.f = neighbor.g + neighbor.h
+                    neighbor.previous = current
+            else:
+                # no solution
+                # print("No solution")
+                pass
 
-        # Show grid
-        grid.show(displaysurface)
+            # Show grid
+            grid.show(displaysurface)
 
-        # Show open and closed sets on grid
-        for openSet in openSets:
-            openSet.show(displaysurface, GREEN)
+            # Show open and closed sets on grid
+            for openSet in openSets:
+                openSet.show(displaysurface, GREEN)
 
-        for closedSet in closedSets:
-            closedSet.show(displaysurface, RED)
+            for closedSet in closedSets:
+                closedSet.show(displaysurface, RED)
+            
+            path = []
+            temp = current
+            path.append(temp)
+            while(temp.previous):
+                path.append(temp.previous)
+                temp = temp.previous
+            for p in path:
+                p.show(displaysurface,BLUE)
 
-        # Update display
-        pygame.display.update()
+            # Update display
+            pygame.display.update()
 
 
 

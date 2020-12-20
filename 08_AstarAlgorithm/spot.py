@@ -16,6 +16,7 @@ class Spot:
         self.h = 0
 
         self.neighbors = []
+        self.previous = None
 
 
     def show(self, surface, color = WHITE):
