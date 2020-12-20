@@ -26,8 +26,8 @@ def main():
     displaysurface.fill((51, 51, 51))
 
 
-    rows = 5
-    cols = 5
+    rows = 25
+    cols = 25
     
 
     # Making 2D-grid
@@ -40,7 +40,10 @@ def main():
     closedSets = []
     
     start = grid.spots[0][0]
-    end = grid.spots[-2][-3]
+    end = grid.spots[-1][-1]
+
+    start.wall = False
+    end.wall = False
 
     openSets.append(start)
 
@@ -53,6 +56,10 @@ def main():
                 return False
         
         while running:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    return False
+
             if (len(openSets) > 0):
                 current = openSets[0]
             
@@ -73,6 +80,9 @@ def main():
                     if neighbor in closedSets:
                         continue
                     
+                    if neighbor.wall:
+                        continue
+
                     tempG = current.g + 1
                     if neighbor in openSets:
                         if tempG < neighbor.g:
@@ -86,8 +96,9 @@ def main():
                     neighbor.previous = current
             else:
                 # no solution
-                # print("No solution")
-                pass
+                running = False
+                print("No solution")
+
 
             # Show grid
             grid.show(displaysurface)
