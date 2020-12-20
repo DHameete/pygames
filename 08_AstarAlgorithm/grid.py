@@ -34,11 +34,11 @@ class Grid:
                 if(c < self.cols - 1):
                     spot.addNeighbors(self.spots[r][c+1])
                     # print("RIGHT")
-                if(r > 0 and c > 0):
-                    spot.addNeighbors(self.spots[r-1][c-1])
-                if(r > 0 and c < self.cols - 1):
-                    spot.addNeighbors(self.spots[r-1][c+1])
-                if(r < self.rows - 1 and c > 0):
-                    spot.addNeighbors(self.spots[r+1][c-1])
-                if(r < self.rows - 1 and c < self.cols - 1):
-                    spot.addNeighbors(self.spots[r+1][c+1])
+                # if(r > 0 and c > 0):
+                #     spot.addNeighbors(self.spots[r-1][c-1])
+                # if(r > 0 and c < self.cols - 1):
+                #     spot.addNeighbors(self.spots[r-1][c+1])
+                # if(r < self.rows - 1 and c > 0):
+                #     spot.addNeighbors(self.spots[r+1][c-1])
+                # if(r < self.rows - 1 and c < self.cols - 1):
+                #     spot.addNeighbors(self.spots[r+1][c+1])

@@ -14,10 +14,10 @@ class Spot:
 
         self.f = 0
         self.g = 0
-        self.h = 0
+        self.h = 1000
 
         self.wall = False
-        if randint(0,10) < 4:
+        if randint(0,10) < 3:
             self.wall = True
 
 
@@ -25,9 +25,9 @@ class Spot:
         self.previous = None
 
 
-    def show(self, surface, color = WHITE):
+    def show(self, surface, color = (32,72,41)):
         if self.wall:
-            pygame.draw.rect(surface, (0,0,0), (self.c * self.width, self.r * self.height, self.width-1, self.height-1))    
+            pygame.draw.rect(surface, (2,2,4), (self.c * self.width, self.r * self.height, self.width-1, self.height-1))    
         else:
             pygame.draw.rect(surface, color, (self.c * self.width, self.r * self.height, self.width-1, self.height-1))
 

@@ -48,12 +48,33 @@ def main():
     openSets.append(start)
 
     running = True
+    best = start
 
     # loop
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 return False
+
+            if event.type == KEYDOWN:
+                if event.key == K_r:
+                    grid = Grid(cols,rows)
+                    grid.checkNeighbor()
+                    
+                    openSets = []
+                    closedSets = []
+
+                    start = grid.spots[0][0]
+                    end = grid.spots[-1][-1]
+
+                    start.wall = False
+                    end.wall = False
+
+                    openSets.append(start)
+
+                    running = True
+                    best = start
+
         
         while running:
             for event in pygame.event.get():
@@ -100,8 +121,12 @@ def main():
                         neighbor.f = neighbor.g + neighbor.h
                         neighbor.previous = current
 
+                        if neighbor.h < best.h:
+                            best = neighbor
+
             else:
                 # no solution
+                current = best
                 running = False
                 print("No solution")
 
@@ -111,19 +136,25 @@ def main():
 
             # Show open and closed sets on grid
             for openSet in openSets:
-                openSet.show(displaysurface, GREEN)
+                openSet.show(displaysurface, (128,206,135))
 
             for closedSet in closedSets:
-                closedSet.show(displaysurface, RED)
+                closedSet.show(displaysurface, (146,229,161))
             
             path = []
             temp = current
             path.append(temp)
+            points = []
             while(temp.previous):
                 path.append(temp.previous)
                 temp = temp.previous
             for p in path:
-                p.show(displaysurface,BLUE)
+                # p.show(displaysurface,BLUE)
+                points.append([p.c*p.width + p.width/2, p.r*p.height + p.height/2])
+            
+            if len(points)>1:
+                pygame.draw.lines(displaysurface,(34,150,85),False,points,6)
+
 
             # Update display
             pygame.display.update()
