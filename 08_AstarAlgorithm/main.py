@@ -6,8 +6,8 @@ from settings import *
 from grid import Grid
 
 def heuristic(a, b):
-    d = math.sqrt( (a.r - b.r)**2 + (a.c - b.c)**2 )
-    # d = abs(a.r-b.r) + abs(a.c-b.c)
+    # d = math.sqrt( (a.r - b.r)**2 + (a.c - b.c)**2 )
+    d = abs(a.r-b.r) + abs(a.c-b.c)
     return d
 
 
@@ -58,6 +58,9 @@ def main():
 
             if event.type == KEYDOWN:
                 if event.key == K_r:
+                    # Draw background
+                    displaysurface.fill((51, 51, 51))
+
                     grid = Grid(cols,rows)
                     grid.checkNeighbor()
                     
