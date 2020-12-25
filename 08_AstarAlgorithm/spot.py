@@ -25,9 +25,9 @@ class Spot:
         self.previous = None
 
 
-    def show(self, surface, color = (32,72,41)):
+    def show(self, surface, color = NEW_COLOR):
         if self.wall:
-            pygame.draw.rect(surface, (2,2,4), (self.c * self.width, self.r * self.height, self.width-1, self.height-1))    
+            pygame.draw.rect(surface, BLACK, (self.c * self.width, self.r * self.height, self.width-1, self.height-1))    
         else:
             pygame.draw.rect(surface, color, (self.c * self.width, self.r * self.height, self.width-1, self.height-1))
 

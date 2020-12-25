@@ -13,22 +13,25 @@ def heuristic(a, b):
 
 def main():
 
-    # Init globals
-    # settings.init()
-
     # setup
     pygame.init()
     display = (WIDTH, HEIGHT)
     displaysurface = pygame.display.set_mode(display)
     pygame.display.set_caption("A* algorithm")
 
+    clock = pygame.time.Clock()
+
     # Draw background
     displaysurface.fill((51, 51, 51))
+    pygame.display.update()
 
-
-    rows = 25
-    cols = 25
+    # Amount of rows and cols
+    rows = 50
+    cols = 50
     
+    # Font
+    font = pygame.font.SysFont('Arial', 36)
+    font.set_bold(True)
 
     # Making 2D-grid
     grid = Grid(cols,rows)
@@ -49,6 +52,14 @@ def main():
 
     running = True
     best = start
+
+    # Restart
+    rect1 = pygame.Rect(WIDTH/2-10,HEIGHT/2-30,20,20)
+    text1 = ''
+    
+    rect2 = pygame.Rect(WIDTH/2-10,HEIGHT/2+10,20,20)
+    text2img = font.render('Restart? Press R.', True, ORANGE)
+    text_rect2 = text2img.get_rect(center=rect2.center)
 
     # loop
     while True:
@@ -94,7 +105,7 @@ def main():
 
                 if current == end:
                     running = False
-                    print("DONE!")
+                    text1 = "Done!"
 
                 openSets.remove(current)
                 closedSets.append(current)
@@ -131,19 +142,23 @@ def main():
                 # no solution
                 current = best
                 running = False
-                print("No solution")
+                text1 = 'No solution..'
 
+            displaysurface.fill((51, 51, 51))
 
             # Show grid
             grid.show(displaysurface)
 
             # Show open and closed sets on grid
             for openSet in openSets:
-                openSet.show(displaysurface, (128,206,135))
+                openSet.show(displaysurface, OPEN_COLOR)
 
             for closedSet in closedSets:
-                closedSet.show(displaysurface, (146,229,161))
+                closedSet.show(displaysurface, CLOSED_COLOR)
             
+            start.show(displaysurface,BEST_COLOR)
+            end.show(displaysurface, ORANGE)
+
             path = []
             temp = current
             path.append(temp)
@@ -153,15 +168,32 @@ def main():
                 temp = temp.previous
             for p in path:
                 # p.show(displaysurface,BLUE)
-                points.append([p.c*p.width + p.width/2, p.r*p.height + p.height/2])
+                points.append([p.c*p.width + p.width/2-1, p.r*p.height + p.height/2-1])
             
-            if len(points)>1:
-                pygame.draw.lines(displaysurface,(34,150,85),False,points,6)
+            path = []
+            temp = best
+            path.append(temp)
+            pointsBest = []
+            while(temp.previous):
+                path.append(temp.previous)
+                temp = temp.previous
+            for p in path:
+                # p.show(displaysurface,BLUE)
+                pointsBest.append([p.c*p.width + p.width/2-1, p.r*p.height + p.height/2-1])
 
+            if len(points)>1:
+                pygame.draw.lines(displaysurface,BEST_COLOR,False,points,4)
+                pygame.draw.lines(displaysurface,ORANGE,False,pointsBest,4)
+
+            if not running:
+                text1img = font.render(text1, True, ORANGE)
+                text_rect1 = text1img.get_rect(center=rect1.center)
+                displaysurface.blit(text1img, text_rect1)
+                displaysurface.blit(text2img, text_rect2)
 
             # Update display
             pygame.display.update()
-
+            clock.tick(60)
 
 
 if __name__ == "__main__":
