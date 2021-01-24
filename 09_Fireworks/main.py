@@ -23,8 +23,6 @@ def main():
     font = pygame.font.SysFont('Arial', 36)
     font.set_bold(True)
 
-    N = 10
-    
     fireworks = []
     fireworks.append(Firework())
     gravity = pygame.math.Vector2(0, 0.2)
