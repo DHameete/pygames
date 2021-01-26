@@ -53,6 +53,7 @@ def main():
         for firework in fireworks[:]:
             firework.update(gravity)
             firework.show(displaysurface)
+            
             if firework.lifespan < 0:
                 fireworks.remove(firework)
 

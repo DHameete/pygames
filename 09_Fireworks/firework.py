@@ -1,4 +1,4 @@
-import pygame, random
+import pygame, random, colorsys
 from settings import *
 
 from particle import Particle
@@ -9,8 +9,10 @@ class Firework():
     def __init__(self):
         pos = (random.randrange(WIDTH),HEIGHT)
         vel = (0,-1*random.randrange(15,25))
-        # vel = (0,-1*10)
-        self.seed = Particle(pos,vel,WHITE)
+
+        color_normal = colorsys.hsv_to_rgb(random.random(),0.4,1)
+        self.color = tuple([255*c for c in color_normal])
+        self.seed = Particle(pos,vel,self.color)
         
         self.particles = []
         self.exploded = False
@@ -36,11 +38,12 @@ class Firework():
         for i in range(100):
             vel = pygame.math.Vector2()
             
-            r = random.uniform(1, 6)
+            # r = random.uniform(1, 6)
+            r = random.uniform(4, 10)
             phi = random.randrange(361)
             vel.from_polar((r, phi))
 
-            self.particles.append(Particle(self.seed.pos, vel, WHITE))
+            self.particles.append(Particle(self.seed.pos, vel, self.color))
 
 
     def show(self,surface):
