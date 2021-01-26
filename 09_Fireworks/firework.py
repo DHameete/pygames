@@ -15,6 +15,8 @@ class Firework():
         self.particles = []
         self.exploded = False
 
+        self.lifespan = 255
+
     def update(self, force): 
         if not self.exploded:
             self.seed.applyForce(force)
@@ -23,7 +25,9 @@ class Firework():
             if self.seed.vel.y >= 0:
                 self.exploded = True
                 self.explode()
+        
         else:
+            self.lifespan -= 8
             for p in self.particles:
                 p.applyForce(force)
                 p.update()
@@ -43,5 +47,12 @@ class Firework():
         if not self.exploded:
             self.seed.show(surface)
         else:
+            # temporary surface
+            surface2 = pygame.Surface((WIDTH,HEIGHT))
+            surface2.set_colorkey((0,0,0))
+            surface2.set_alpha(self.lifespan) 
+
             for p in self.particles:
-                p.show(surface)
+                p.show(surface2)
+
+            surface.blit(surface2, (0,0))
