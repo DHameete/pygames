@@ -1,4 +1,4 @@
-import pygame, random, colorsys
+import pygame, random, colorsys, math
 from settings import *
 
 from particle import Particle
@@ -39,9 +39,14 @@ class Firework():
             vel = pygame.math.Vector2()
             
             # r = random.uniform(1, 6)
-            r = random.uniform(4, 10)
             phi = random.randrange(361)
-            vel.from_polar((r, phi))
+            # r = random.uniform(4, 10)
+            # vel.from_polar((r, phi))
+            
+            r = 0.4
+            x = r * 16 * (math.sin(phi))**3
+            y = -r * (13 * math.cos(phi) - 5 * math.cos(2*phi) - 2 * math.cos(3 * phi) - math.cos(4 * phi))
+            vel.update(x,y)
 
             self.particles.append(Particle(self.seed.pos, vel, self.color))
 
