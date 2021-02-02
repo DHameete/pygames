@@ -26,9 +26,11 @@ class Perceptron:
     def guess(self, inputs):
         weighted_sum = 0
 
+        # Calculate weighted sum
         for ind, weight in enumerate(self.weights):
             weighted_sum += weight * inputs[ind]
 
+        # Evaluate activation function
         output = activate(weighted_sum)
         return output
 
@@ -43,7 +45,7 @@ class Perceptron:
     def show(self, surface):
         x1 = 0
         x2 = WIDTH 
-
+        
         y1 = -self.weights[0] / self.weights[1] * x1
         y2 = -self.weights[0] / self.weights[1] * x2
 

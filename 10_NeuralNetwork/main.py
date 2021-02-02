@@ -25,13 +25,16 @@ def main():
     font = pygame.font.SysFont('Arial', 36)
     font.set_bold(True)
 
+    # Initialize perceptrion
     p = Perceptron(2)
 
+    # Initialize inputs
     points = []
     for _ in range(100):
         point = Point()
         points.append(point)
 
+    # Next index to train perceptron 
     nextind = 0
 
     # loop
@@ -43,6 +46,7 @@ def main():
         # Background surface
         displaysurface.fill(DARKGRAY)
 
+        # Show points
         for point in points:
             guess = p.guess((point.x, point.y))
             if guess == point.label:
@@ -53,9 +57,12 @@ def main():
         # Train per point
         nextpoint = points[nextind]
         p.train((nextpoint.x, nextpoint.y), nextpoint.label)
+
+        # Show perceptrion
         p.show(displaysurface)
-        nextind += 1
-        nextind %= len(points)
+
+        # Increment index
+        nextind = (nextind + 1) % len(points)
 
         # Update display
         pygame.display.update()

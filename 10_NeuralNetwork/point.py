@@ -15,12 +15,11 @@ class Point:
         else:
             self.label = -1
 
-    # def evaluate(self, p):
-    #     self.label = p.guess((self.x,self.y))       
-
     def show(self, surface, color):
         if self.label >= 0:
-            pygame.draw.rect(surface, color, (self.x, self.y,8,8))
+            # Square
+            pygame.draw.rect(surface, color, (self.x, self.y, 8, 8))
         else:
+            # Circle
             pygame.draw.circle(surface, color, (self.x, self.y), 5)
         
