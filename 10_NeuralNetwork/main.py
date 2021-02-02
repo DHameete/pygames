@@ -6,6 +6,7 @@ from settings import *
 from perceptron import Perceptron
 from point import Point
 
+
 def main():
 
     # setup
@@ -26,7 +27,7 @@ def main():
     font.set_bold(True)
 
     # Initialize perceptrion
-    p = Perceptron(2)
+    p = Perceptron(3)
 
     # Initialize inputs
     points = []
@@ -48,7 +49,7 @@ def main():
 
         # Show points
         for point in points:
-            guess = p.guess((point.x, point.y))
+            guess = p.guess((point.x, point.y, point.bias))
             if guess == point.label:
                 point.show(displaysurface, GREEN)
             else:
@@ -56,7 +57,7 @@ def main():
 
         # Train per point
         nextpoint = points[nextind]
-        p.train((nextpoint.x, nextpoint.y), nextpoint.label)
+        p.train((nextpoint.x, nextpoint.y, nextpoint.bias), nextpoint.label)
 
         # Show perceptrion
         p.show(displaysurface)

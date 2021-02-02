@@ -41,16 +41,19 @@ class Perceptron:
         # Tune weights
         for ind, weight in enumerate(self.weights):
             self.weights[ind] += error * inputs[ind] * self.lr
-
+    
+    def pixels(self, x, y):
+        return ((1 + x) / 2 * WIDTH, (1 - y) / 2 * HEIGHT)
+    
     def show(self, surface):
-        x1 = 0
-        x2 = WIDTH 
+        x1 = -1
+        x2 = 1 
         
-        y1 = -self.weights[0] / self.weights[1] * x1
-        y2 = -self.weights[0] / self.weights[1] * x2
+        y1 = -self.weights[0] / self.weights[1] * x1 - self.weights[2] / self.weights[1]
+        y2 = -self.weights[0] / self.weights[1] * x2 - self.weights[2] / self.weights[1]
 
-        self.pos1 = self.pos1.lerp(pygame.Vector2(x1,y1),0.1)
-        self.pos2 = self.pos2.lerp(pygame.Vector2(x2,y2),0.1)
+        self.pos1 = self.pos1.lerp(pygame.Vector2(self.pixels(x1,y1)),0.1)
+        self.pos2 = self.pos2.lerp(pygame.Vector2(self.pixels(x2,y2)),0.1)
 
         pygame.draw.line(surface, WHITE, self.pos1, self.pos2, 2)
 
