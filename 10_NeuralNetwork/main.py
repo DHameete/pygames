@@ -5,6 +5,7 @@ import sys, time, math, random
 from settings import *
 from perceptron import Perceptron
 from point import Point
+from nn import NeuralNetwork
 
 
 def main():
@@ -23,8 +24,12 @@ def main():
     clock = pygame.time.Clock()
 
     # Font
-    font = pygame.font.SysFont('Arial', 36)
+    font = pygame.font.SysFont('Arial', 16)
     font.set_bold(True)
+
+    # Text
+    text4 = font.render(f'{0}', True, WHITE)
+    text_rect4 = text4.get_rect(center=(20,25))
 
     # Initialize perceptrion
     p = Perceptron(3)
@@ -37,6 +42,8 @@ def main():
 
     # Next index to train perceptron 
     nextind = 0
+
+    brain = NeuralNetwork(3,4,2)
 
     # loop
     while True:
@@ -61,6 +68,12 @@ def main():
 
         # Show perceptrion
         p.show(displaysurface)
+
+        # Update and show text
+        w = [round(pw, 2) for pw in p.weights]
+        text4 = font.render(f'{w}', True, WHITE)
+        text_rect4 = text4.get_rect(center=(75,25))
+        displaysurface.blit(text4,text_rect4)
 
         # Increment index
         nextind = (nextind + 1) % len(points)

@@ -5,7 +5,7 @@ from settings import *
 
 def f_line(x):
     # y = mx + b
-    return 0.3 * x + 0*0.2
+    return 0.3 * x + 0.2
 
 class Point:
 
