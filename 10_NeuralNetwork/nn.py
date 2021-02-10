@@ -8,3 +8,9 @@ class NeuralNetwork:
         self.input_nodes = numI
         self.hidden_nodes = numH
         self.output_nodes = numO
+
+        # self.weights_ih =
+
+
+    def feedforward(self, input_nn):
+        pass

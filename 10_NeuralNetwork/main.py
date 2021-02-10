@@ -7,6 +7,8 @@ from perceptron import Perceptron
 from point import Point
 from nn import NeuralNetwork
 
+from matrix import Matrix
+
 
 def main():
 
@@ -43,7 +45,23 @@ def main():
     # Next index to train perceptron 
     nextind = 0
 
-    brain = NeuralNetwork(3,4,2)
+    nn = NeuralNetwork(3,4,2)
+    # input_nn = [1, 0]
+
+    # output_nn = nn.feedforward(input)
+    # print(output_nn)
+
+    m = Matrix(2,3)
+    m.randomize()
+    print(m.values)
+
+    n = Matrix(2,3)
+    n.randomize()
+    print(n.values)
+
+    m.add(n)
+    print(m.values)
+    
 
     # loop
     while True:
