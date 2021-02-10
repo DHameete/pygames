@@ -32,7 +32,7 @@ def main():
     text_rect4 = text4.get_rect(center=(20,25))
 
     # Initialize perceptrion
-    p = Perceptron(3)
+    p = Perceptron(2)
 
     # Initialize inputs
     points = []
@@ -56,7 +56,7 @@ def main():
 
         # Show points
         for point in points:
-            guess = p.guess((point.x, point.y, point.bias))
+            guess = p.guess(point)
             if guess == point.label:
                 point.show(displaysurface, GREEN)
             else:
@@ -64,7 +64,7 @@ def main():
 
         # Train per point
         nextpoint = points[nextind]
-        p.train((nextpoint.x, nextpoint.y, nextpoint.bias), nextpoint.label)
+        p.train(nextpoint)
 
         # Show perceptrion
         p.show(displaysurface)
