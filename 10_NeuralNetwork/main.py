@@ -53,15 +53,10 @@ def main():
 
     m = Matrix(2,3)
     m.randomize()
-    print(m.values)
+    print(m)
 
-    n = Matrix(2,3)
-    n.randomize()
-    print(n.values)
-
-    m.add(n)
-    print(m.values)
-    
+    m.transpose()
+    print(m)
 
     # loop
     while True:
