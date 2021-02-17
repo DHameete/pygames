@@ -45,18 +45,14 @@ def main():
     # Next index to train perceptron 
     nextind = 0
 
-    nn = NeuralNetwork(3,4,2)
-    # input_nn = [1, 0]
+    nn = NeuralNetwork(2,4,2)
 
-    # output_nn = nn.feedforward(input)
-    # print(output_nn)
+    input_nn = Matrix.fromArray([1, 0])
+    print(input_nn)
 
-    m = Matrix(2,3)
-    m.randomize()
-    print(m)
+    output_nn = nn.feedforward(input_nn)
+    print(output_nn)
 
-    m.transpose()
-    print(m)
 
     # loop
     while True:

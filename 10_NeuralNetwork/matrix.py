@@ -2,7 +2,7 @@ import random
 
 class Matrix:
 
-    def __init__(self, rows, cols):
+    def __init__(self, rows=1, cols=1):
         self.rows = rows
         self.cols = cols
         self.values = []
@@ -16,6 +16,15 @@ class Matrix:
             p += '\n' 
         return p
 
+    @staticmethod
+    def fromArray(arr):
+        rows = len(arr)
+        cols = 1
+        m = Matrix(rows, cols)
+
+        m.values = [[row] for row in arr ]
+        return m
+
     def add(self, n):
         if(isinstance(n, Matrix)):
             if self.rows == n.rows and self.cols == n.cols:
@@ -23,10 +32,13 @@ class Matrix:
             else:
                 raise ValueError("Matrices do not have the same size.")
         elif(isinstance(n, (float, int, complex))):
-            self.values = [[value+n for value in row] for row in self.values]
+            self.map(lambda x: x + n)
         else:
             raise TypeError("Input is not a Numeric Type")
-        
+
+    def map(self, func):
+        self.values = [[func(value) for value in row] for row in self.values]
+
     def multiply(self, n):
         if(isinstance(n, Matrix)):
             if self.cols == n.rows:
@@ -41,12 +53,12 @@ class Matrix:
             else:
                 raise ValueError("Matrices do not have the right size.")
         elif(isinstance(n, (float, int, complex))):
-            self.values = [[value*n for value in row] for row in self.values]
+            self.map(lambda x: x * n)
         else:
             raise TypeError("Input is not a Numeric Type")
 
     def randomize(self):
-        self.values = [[random.randrange(10) for _ in row] for row in self.values]
+        self.map(lambda x: random.random()*2 - 1)
 
     def transpose(self):
         self.rows, self.cols = self.cols, self.rows
