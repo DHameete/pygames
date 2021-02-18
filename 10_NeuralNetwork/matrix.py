@@ -30,8 +30,6 @@ class Matrix:
         m.values = self.values.copy()
         return m
 
-    #setter?
-
     def add(self, n):
         if(isinstance(n, Matrix)):
             if self.rows == n.rows and self.cols == n.cols:
@@ -44,11 +42,12 @@ class Matrix:
             raise TypeError("Input is not a Numeric Type")
 
     def multiply(self, n):
+        # hadamar product
         if(isinstance(n, Matrix)):
-            if self.cols == n.rows:
+            if self.rows == n.rows and self.cols == n.cols:
                 self.values = [[v1*v2 for (v1, v2) in zip(row1, row2)] for (row1, row2) in zip(self.values, n.values)]
             else:
-                raise ValueError("Matrices do not have the right size.")
+                raise ValueError("Matrices do not have the same size.")
         elif(isinstance(n, (float, int, complex))):
             self.map(lambda x: x * n)
         else:

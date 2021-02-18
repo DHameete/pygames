@@ -67,3 +67,9 @@ class MatMath:
         m = Matrix(a.cols, a.rows)
         m.values = list(map(list, zip(*a.values)))
         return m
+
+    @staticmethod
+    def map(a, func):
+        m = a.copy()
+        m.values = [[func(value) for value in row] for row in a.values]
+        return m

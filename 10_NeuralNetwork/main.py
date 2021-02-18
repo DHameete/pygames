@@ -45,15 +45,27 @@ def main():
     # Next index to train perceptron 
     nextind = 0
 
-    nn = NeuralNetwork(2,2,2)
 
-    inputs_nn = Matrix.fromArray([1, 0])
-    targets_nn = Matrix.fromArray([1, 0])
+    training_data = [
+        {'input': [0,1], 'target':[1]},
+        {'input': [1,0], 'target':[1]},
+        {'input': [1,1], 'target':[0]},
+        {'input': [0,0], 'target':[0]},
+    ]
 
-    nn.train(inputs_nn, targets_nn)
+    nn = NeuralNetwork(2,2,1)
 
-    output_nn = nn.feedforward(inputs_nn)
-    print(output_nn)
+    for _ in range(50000):
+        data = random.choice(training_data)
+        inputs_nn = Matrix.fromArray(data['input'])
+        targets_nn = Matrix.fromArray(data['target'])
+
+        nn.train(inputs_nn, targets_nn)
+
+    for data in training_data:
+        inputs_nn = Matrix.fromArray(data['input'])
+        (outputs_nn, _) = nn.feedforward(inputs_nn)
+        print(f"in: {inputs_nn} out: {outputs_nn}")
 
 
     # loop
