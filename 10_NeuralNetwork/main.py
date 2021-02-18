@@ -8,7 +8,7 @@ from point import Point
 from nn import NeuralNetwork
 
 from matrix import Matrix
-
+from matmath import MatMath
 
 def main():
 
@@ -45,12 +45,14 @@ def main():
     # Next index to train perceptron 
     nextind = 0
 
-    nn = NeuralNetwork(2,4,2)
+    nn = NeuralNetwork(2,2,2)
 
-    input_nn = Matrix.fromArray([1, 0])
-    print(input_nn)
+    inputs_nn = Matrix.fromArray([1, 0])
+    targets_nn = Matrix.fromArray([1, 0])
 
-    output_nn = nn.feedforward(input_nn)
+    nn.train(inputs_nn, targets_nn)
+
+    output_nn = nn.feedforward(inputs_nn)
     print(output_nn)
 
 

@@ -2,9 +2,15 @@ import pygame, math
 
 from settings import *
 from matrix import Matrix
+from matmath import MatMath
 
 def sigmoid(x):
     return 1 / (1 + math.exp(-x))
+
+def dsigmoid(y):
+    # y is already the sigmoid input
+    return y * (1 - y)
+
 
 class NeuralNetwork:
 
@@ -26,14 +32,33 @@ class NeuralNetwork:
     def feedforward(self, input_nn):
 
         # Generate hidden output
-        hidden_nn = self.weights_ih.multiply(input_nn)
+        hidden_nn = MatMath.multiply(self.weights_ih,input_nn)
         hidden_nn.add(self.bias_h)
 
-        # Activation function
+        # Activation function on hidden
         hidden_nn.map(sigmoid)
 
-        output_nn = self.weights_ho.multiply(hidden_nn)
+        # Generate output
+        output_nn = MatMath.multiply(self.weights_ho,hidden_nn)
         output_nn.add(self.bias_o)
+
+        # Activation function on output
         output_nn.map(sigmoid)
 
         return output_nn
+
+    
+    def train(self, input_nn, targets):
+        output_nn = self.feedforward(input_nn)
+
+        # Calculate the output error
+        # ERROR = TARGETS - OUTPUTS
+        output_errors = MatMath.subtract(targets, output_nn)
+        output_nn.map(dsigmoid)
+
+
+        # Calculate the hidden layer errors
+        weights_ho_T = MatMath.transpose(self.weights_ho)
+        hidden_errors = MatMath.multiply(weights_ho_T,output_errors)
+
+        print(hidden_errors)
