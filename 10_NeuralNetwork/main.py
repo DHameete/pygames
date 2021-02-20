@@ -46,26 +46,33 @@ def main():
     nextind = 0
 
 
+    # training_data = [
+    #     {'input': [0,1], 'target':[1]},
+    #     {'input': [1,0], 'target':[1]},
+    #     {'input': [1,1], 'target':[0]},
+    #     {'input': [0,0], 'target':[0]},
+    # ]
+
     training_data = [
-        {'input': [0,1], 'target':[1]},
-        {'input': [1,0], 'target':[1]},
+        {'input': [-1,1], 'target':[1]},
+        {'input': [1,-1], 'target':[1]},
         {'input': [1,1], 'target':[0]},
-        {'input': [0,0], 'target':[0]},
+        {'input': [-1,-1], 'target':[0]},
     ]
 
     nn = NeuralNetwork(2,2,1)
 
-    for _ in range(50000):
-        data = random.choice(training_data)
-        inputs_nn = Matrix.fromArray(data['input'])
-        targets_nn = Matrix.fromArray(data['target'])
+    for _ in range(500):
+        # data = random.choice(training_data)
+        # inputs_nn = Matrix.fromArray(data['input'])
+        # targets_nn = Matrix.fromArray(data['target'])
 
-        nn.train(inputs_nn, targets_nn)
+        data = random.choice(points)
+        nn.train([data.x,data.y], [data.label])
 
     for data in training_data:
-        inputs_nn = Matrix.fromArray(data['input'])
-        (outputs_nn, _) = nn.feedforward(inputs_nn)
-        print(f"in: {inputs_nn} out: {outputs_nn}")
+        output_arr = nn.guess(data['input'])
+        print(f"in: {data['input']} out: {output_arr}")
 
 
     # loop
@@ -79,11 +86,17 @@ def main():
 
         # Show points
         for point in points:
-            guess = p.guess(point)
-            if guess == point.label:
-                point.show(displaysurface, GREEN)
-            else:
-                point.show(displaysurface, ORANGE)
+            # guess = p.guess(point)
+            guess = nn.guess([point.x,point.y])
+
+            v = min(abs(guess[0] - point.label),1)
+            c = GREEN.lerp(ORANGE, v)
+
+            point.show(displaysurface, c)
+            # if abs(guess.values[0][0] - point.label) < 0.2:
+            #     point.show(displaysurface, GREEN)
+            # else:
+            #     point.show(displaysurface, ORANGE)
 
         # Train per point
         nextpoint = points[nextind]

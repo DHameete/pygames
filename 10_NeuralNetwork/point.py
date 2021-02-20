@@ -3,9 +3,16 @@ import random
 
 from settings import *
 
-def f_line(x):
+def f_line(x,y):
     # y = mx + b
-    return 0.3 * x + 0.2
+    line1 = x + 0.5
+    line2 = x - 0.5
+    if line1 < y or line2 > y:
+        label = 1
+    else:
+        label = 0
+
+    return label
 
 class Point:
 
@@ -15,10 +22,7 @@ class Point:
         self.y = random.uniform(-1,1)
         self.bias = 1
 
-        if f_line(self.x) > self.y:
-            self.label = 1
-        else:
-            self.label = -1
+        self.label = f_line(self.x, self.y)
 
     def pixelX(self):
         return (1 + self.x) / 2 * WIDTH
@@ -30,7 +34,7 @@ class Point:
         px = self.pixelX()
         py = self.pixelY()
 
-        if self.label >= 0:
+        if self.label > 0:
             # Square
             pygame.draw.rect(surface, color, (px, py, 8, 8))
         else:

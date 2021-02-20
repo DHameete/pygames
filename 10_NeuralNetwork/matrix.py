@@ -25,6 +25,9 @@ class Matrix:
         m.values = [ [row] for row in arr ]
         return m
 
+    def toArray(self):
+        return [row[0] for row in self.values]
+
     def copy(self):
         m = Matrix(self.rows, self.cols)
         m.values = self.values.copy()
