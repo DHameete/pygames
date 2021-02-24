@@ -57,12 +57,10 @@ def main():
 
     # Show points
     for point in test_data:
-        # guess = p.guess(point)
         guess = nn.guess([point.x,point.y])
 
         print(f"guess: {guess}, label: {point.label}")
         v = min(abs(guess[0] - point.label),1)
-        # c = GREEN.lerp(ORANGE, v)
 
 
     # loop
@@ -74,12 +72,6 @@ def main():
         # Background surface
         displaysurface.fill(DARKGRAY)
 
-        # for point in training_data:
-        #     if point.label > 0.5:
-        #         point.show(displaysurface, YELLOW)
-        #     else:
-        #         point.show(displaysurface, ORANGE)
-
         # Show points
         for point in test_data:
             # guess = p.guess(point)
@@ -89,25 +81,13 @@ def main():
             c = GREEN.lerp(RED, v)
 
             point.show(displaysurface, c)
-            # if abs(guess[0] - point.label) < 0.2:
-            #     point.show(displaysurface, GREEN)
-            # else:
-            #     point.show(displaysurface, ORANGE)
+
 
         # Train per point
         for _ in range(10):
-            # nextpoint = training_data[nextind]
             nextpoint = random.choice(training_data)
             nn.train([nextpoint.x,nextpoint.y], [nextpoint.label])
             guess = nn.guess([nextpoint.x,nextpoint.y])
-            # print(f"guess: {round(guess[0],2)}, label: {nextpoint.label}")
-            print(round(abs(guess[0]-nextpoint.label),2))
-            
-        # for data in training_data:
-        #     nn.train([data.x,data.y], [data.label])
-        
-        # Show perceptrion
-        # p.show(displaysurface)
 
         # Update and show text
         w = [round(pw, 2) for pw in p.weights]
