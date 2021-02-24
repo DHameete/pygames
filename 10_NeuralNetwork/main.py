@@ -37,42 +37,32 @@ def main():
     p = Perceptron(2)
 
     # Initialize inputs
-    points = []
+    training_data = []
+    for _ in range(500):
+        point = Point()
+        training_data.append(point)
+
+    test_data = []
     for _ in range(100):
         point = Point()
-        points.append(point)
+        test_data.append(point)
 
     # Next index to train perceptron 
     nextind = 0
 
-
-    # training_data = [
-    #     {'input': [0,1], 'target':[1]},
-    #     {'input': [1,0], 'target':[1]},
-    #     {'input': [1,1], 'target':[0]},
-    #     {'input': [0,0], 'target':[0]},
-    # ]
-
-    training_data = [
-        {'input': [-1,1], 'target':[1]},
-        {'input': [1,-1], 'target':[1]},
-        {'input': [1,1], 'target':[0]},
-        {'input': [-1,-1], 'target':[0]},
-    ]
-
     nn = NeuralNetwork(2,2,1)
 
-    for _ in range(500):
-        # data = random.choice(training_data)
-        # inputs_nn = Matrix.fromArray(data['input'])
-        # targets_nn = Matrix.fromArray(data['target'])
-
-        data = random.choice(points)
+    for data in training_data:
         nn.train([data.x,data.y], [data.label])
 
-    for data in training_data:
-        output_arr = nn.guess(data['input'])
-        print(f"in: {data['input']} out: {output_arr}")
+    # Show points
+    for point in test_data:
+        # guess = p.guess(point)
+        guess = nn.guess([point.x,point.y])
+
+        print(f"guess: {guess}, label: {point.label}")
+        v = min(abs(guess[0] - point.label),1)
+        # c = GREEN.lerp(ORANGE, v)
 
 
     # loop
@@ -84,26 +74,40 @@ def main():
         # Background surface
         displaysurface.fill(DARKGRAY)
 
+        # for point in training_data:
+        #     if point.label > 0.5:
+        #         point.show(displaysurface, YELLOW)
+        #     else:
+        #         point.show(displaysurface, ORANGE)
+
         # Show points
-        for point in points:
+        for point in test_data:
             # guess = p.guess(point)
             guess = nn.guess([point.x,point.y])
 
             v = min(abs(guess[0] - point.label),1)
-            c = GREEN.lerp(ORANGE, v)
+            c = GREEN.lerp(RED, v)
 
             point.show(displaysurface, c)
-            # if abs(guess.values[0][0] - point.label) < 0.2:
+            # if abs(guess[0] - point.label) < 0.2:
             #     point.show(displaysurface, GREEN)
             # else:
             #     point.show(displaysurface, ORANGE)
 
         # Train per point
-        nextpoint = points[nextind]
-        p.train(nextpoint)
-
+        for _ in range(10):
+            # nextpoint = training_data[nextind]
+            nextpoint = random.choice(training_data)
+            nn.train([nextpoint.x,nextpoint.y], [nextpoint.label])
+            guess = nn.guess([nextpoint.x,nextpoint.y])
+            # print(f"guess: {round(guess[0],2)}, label: {nextpoint.label}")
+            print(round(abs(guess[0]-nextpoint.label),2))
+            
+        # for data in training_data:
+        #     nn.train([data.x,data.y], [data.label])
+        
         # Show perceptrion
-        p.show(displaysurface)
+        # p.show(displaysurface)
 
         # Update and show text
         w = [round(pw, 2) for pw in p.weights]
@@ -112,7 +116,7 @@ def main():
         displaysurface.blit(text4,text_rect4)
 
         # Increment index
-        nextind = (nextind + 1) % len(points)
+        nextind = (nextind + 1) % len(training_data)
 
         # Update display
         pygame.display.update()
