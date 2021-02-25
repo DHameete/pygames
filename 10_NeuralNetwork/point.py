@@ -24,6 +24,14 @@ class Point:
 
         self.label = f_line(self.x, self.y)
 
+    def setPos(self, x, y):
+        self.x = x
+        self.y = y
+        self.bias = 1
+
+        self.label = f_line(self.x, self.y)
+
+
     def pixelX(self):
         return (1 + self.x) / 2 * WIDTH
 

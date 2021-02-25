@@ -59,9 +59,9 @@ def main():
     for point in test_data:
         guess = nn.guess([point.x,point.y])
 
-        print(f"guess: {guess}, label: {point.label}")
-        v = min(abs(guess[0] - point.label),1)
-
+    res = 50
+    cols = WIDTH // res
+    rows = HEIGHT // res
 
     # loop
     while True:
@@ -71,6 +71,23 @@ def main():
 
         # Background surface
         displaysurface.fill(DARKGRAY)
+
+        for row in range(rows):
+            for col in range(cols):
+                point = Point()
+                x = (2*col + 1) / cols - 1
+                y = -1 * ((2*row + 1) / rows - 1)
+                point.setPos(x, y)
+
+                guess = nn.guess([point.x,point.y])
+
+                v = min(abs(guess[0] - point.label),1)
+                v = guess[0]
+                c = YELLOW.lerp(ORANGE, v)
+
+                rc = pygame.Rect(col*res, row*res, res, res)
+                pygame.draw.rect(displaysurface,c,rc, 2)
+
 
         # Show points
         for point in test_data:
@@ -84,19 +101,19 @@ def main():
 
 
         # Train per point
-        for _ in range(10):
+        for _ in range(1000):
             nextpoint = random.choice(training_data)
             nn.train([nextpoint.x,nextpoint.y], [nextpoint.label])
             guess = nn.guess([nextpoint.x,nextpoint.y])
 
         # Update and show text
-        w = [round(pw, 2) for pw in p.weights]
-        text4 = font.render(f'{w}', True, WHITE)
-        text_rect4 = text4.get_rect(center=(75,25))
-        displaysurface.blit(text4,text_rect4)
+        # w = [round(pw, 2) for pw in p.weights]
+        # text4 = font.render(f'{w}', True, WHITE)
+        # text_rect4 = text4.get_rect(center=(75,25))
+        # displaysurface.blit(text4,text_rect4)
 
         # Increment index
-        nextind = (nextind + 1) % len(training_data)
+        # nextind = (nextind + 1) % len(training_data)
 
         # Update display
         pygame.display.update()
