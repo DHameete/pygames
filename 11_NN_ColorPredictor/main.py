@@ -1,0 +1,51 @@
+import pygame
+from pygame.locals import *
+import sys, time, math, random
+
+from settings import *
+from nn import NeuralNetwork
+
+from matrix import Matrix
+from matmath import MatMath
+
+def main():
+
+    # setup
+    pygame.init()
+    display = (WIDTH, HEIGHT)
+    displaysurface = pygame.display.set_mode(display)
+    pygame.display.set_caption("Color Predictor!")
+
+    # Draw background
+    displaysurface.fill(DARKGRAY)
+    pygame.display.update()
+
+    # Clock
+    clock = pygame.time.Clock()
+
+    # Font
+    font = pygame.font.SysFont('Arial', 16)
+    font.set_bold(True)
+
+    # Text
+    text4 = font.render(f'{0}', True, WHITE)
+    text_rect4 = text4.get_rect(center=(20,25))
+
+    # loop
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                return False
+
+        # Background surface
+        displaysurface.fill(DARKGRAY)
+
+        # Update display
+        pygame.display.update()
+        clock.tick(FPS)
+
+
+if __name__ == "__main__":
+    main()
+    pygame.quit()
+    sys.exit()
