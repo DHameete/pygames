@@ -28,7 +28,7 @@ class NeuralNetwork:
         self.bias_o = Matrix(self.output_nodes, 1)
         self.bias_h.randomize()
         self.bias_o.randomize()
-        self.learning_rate = 0.3
+        self.learning_rate = 0.4
 
     def feedforward(self, inputs):
 
