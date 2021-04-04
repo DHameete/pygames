@@ -45,7 +45,7 @@ def main():
                 return False
 
         # Background surface
-        displaysurface.fill(WHITE)
+        displaysurface.fill(DARKGRAY)
 
         # Draw text
         # ft_font.render_to(displaysurface, text_black_rect.topleft, text_black, BLACK)

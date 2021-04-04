@@ -13,6 +13,15 @@ from matmath import MatMath
 import numpy as np
 
 
+def displaytext(ft_font,displaysurface,text):
+    text_black = text
+    text_black_rect = ft_font.get_rect(text_black)
+    text_black_rect.center = (WIDTH/2,HEIGHT/2)
+    
+    ft_font.render_to(displaysurface, text_black_rect.topleft, text_black, ORANGE)
+    pygame.display.update()
+
+
 def main():
 
     # setup
@@ -22,7 +31,7 @@ def main():
     pygame.display.set_caption("Doodle Classifier!")
 
     # Draw background
-    displaysurface.fill(DARKGRAY)
+    displaysurface.fill(WHITE)
     pygame.display.update()
 
     # Clock
@@ -31,17 +40,19 @@ def main():
     # Font
     ft_font = pygame.freetype.SysFont('Arial', 64, True)
 
-    # Texts
-    text_black = 'Black'
-    text_black_rect = ft_font.get_rect(text_black)
-    text_black_rect.center = (WIDTH/4,HEIGHT/2)
+    # Select data
+    name = "speedboat"
 
-    name = "truck"
+    # Texts
+    displaytext(ft_font,displaysurface,f'Loading data...')
+    
+    # Load data
     lnk = f'https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/{name}.npy'
     response = requests.get(lnk)
     response.raise_for_status()
     indata = np.load(io.BytesIO(response.content))
-
+  
+    
     s = 28
     num_indata = indata.shape[0]
 
@@ -55,8 +66,10 @@ def main():
         data = indata[n]
         outdata.extend(bytearray(data))
         data_array.append(data)
-
-    with open(f'{name}400.bin', 'wb') as f:
+    
+    displaysurface.fill(WHITE)
+    displaytext(ft_font,displaysurface,f'Writing data...')
+    with open(f'data/{name}400.bin', 'wb') as f:
         f.write(outdata)
 
     # loop
@@ -80,7 +93,7 @@ def main():
                     pygame.draw.rect(displaysurface, c, pos)
 
         # Draw text
-        # ft_font.render_to(displaysurface, text_black_rect.topleft, text_black, BLACK)
+        displaytext(ft_font,displaysurface,f'{name}!')
 
         # Update display
         pygame.display.update()
