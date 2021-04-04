@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import pygame.freetype
 import sys, time, math, random, os
+import requests, io
 
 from settings import *
 from nn import NeuralNetwork
@@ -35,8 +36,28 @@ def main():
     text_black_rect = ft_font.get_rect(text_black)
     text_black_rect.center = (WIDTH/4,HEIGHT/2)
 
-    # New neural network
-    brain = NeuralNetwork(3,3,2)
+    name = "truck"
+    lnk = f'https://storage.googleapis.com/quickdraw_dataset/full/numpy_bitmap/{name}.npy'
+    response = requests.get(lnk)
+    response.raise_for_status()
+    indata = np.load(io.BytesIO(response.content))
+
+    s = 28
+    num_indata = indata.shape[0]
+
+    p_size = 1
+    rows = math.floor((WIDTH / s) / p_size)
+
+    data_array = []
+    outdata = bytearray()
+    for _ in range(rows*rows):
+        n = random.randrange(num_indata)
+        data = indata[n]
+        outdata.extend(bytearray(data))
+        data_array.append(data)
+
+    with open(f'{name}400.bin', 'wb') as f:
+        f.write(outdata)
 
     # loop
     while True:
@@ -46,6 +67,17 @@ def main():
 
         # Background surface
         displaysurface.fill(WHITE)
+
+        # Draw 
+        for ind in range(len(data_array)):
+            start_x = ind % rows
+            start_y = math.floor(ind / rows)
+
+            for y in range(s):
+                for x in range(s):
+                    c = [255-data_array[ind][s * y + x] for _ in range(3)]
+                    pos = ((start_x * s + x) * p_size, (start_y * s + y) * p_size, p_size, p_size)
+                    pygame.draw.rect(displaysurface, c, pos)
 
         # Draw text
         # ft_font.render_to(displaysurface, text_black_rect.topleft, text_black, BLACK)

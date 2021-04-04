@@ -1,7 +1,7 @@
 from pygame import Color
 
-WIDTH = 600
-HEIGHT = 400
+WIDTH = 560
+HEIGHT = 560
 
 FPS = 60
 
