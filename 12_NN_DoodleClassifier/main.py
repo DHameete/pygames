@@ -12,6 +12,23 @@ from matmath import MatMath
 import numpy as np
 
 
+def splitData(name):
+    filename = f'data/{name}400.bin'
+    with open(filename, mode='rb') as file: # b is important -> binary
+        data = file.read()
+
+    output = {
+        "training": [],
+        "testing": []
+    }
+    
+    for i in range(TOTAL_DATA):
+        if i < math.floor(TOTAL_DATA*0.8):
+            output["training"].append(data[i*SIZE:i*SIZE+SIZE])
+        else:
+            output["testing"].append(data[i*SIZE:i*SIZE+SIZE])
+    return output
+
 def main():
 
     # setup
@@ -35,14 +52,13 @@ def main():
     # Texts
     text_black = 'Black'
     text_black_rect = ft_font.get_rect(text_black)
-    text_black_rect.center = (WIDTH/4,HEIGHT/2)
+    text_black_rect.center = (WIDTH/4, HEIGHT/2)
 
-    filename = 'data/car400.bin'
-    with open(filename, mode='rb') as file: # b is important -> binary
-        airplanes = file.read()
-
-    ind_pick = random.randrange(400)
-    img_surf = pygame.image.frombuffer(airplanes[ind_pick*784:ind_pick*784+784],(28,28),"P")
+    airplanes = splitData('airplane')
+    cars = splitData('car')
+    
+    ind_pick = random.randrange(len(airplanes["training"]))
+    img_surf = pygame.image.frombuffer(airplanes["training"][ind_pick],(28,28),"P")
     img_surf.set_palette(anglcolorpalette)
 
     # New neural network

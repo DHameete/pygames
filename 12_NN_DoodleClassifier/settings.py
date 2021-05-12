@@ -13,3 +13,6 @@ GREEN = Color(0, 255, 0)
 BLUE = Color(0, 0, 255)
 ORANGE = Color(251,94,15)
 YELLOW = Color(255, 255, 0)
+
+SIZE = 784
+TOTAL_DATA = 400
