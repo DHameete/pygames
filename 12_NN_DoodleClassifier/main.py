@@ -18,6 +18,8 @@ def main():
     pygame.init()
     display = (WIDTH, HEIGHT)
     displaysurface = pygame.display.set_mode(display)
+    anglcolorpalette=[(255-x,255-x,255-x) for x in range(0,256)]
+
     pygame.display.set_caption("Doodle Classifier!")
 
     # Draw background
@@ -35,6 +37,14 @@ def main():
     text_black_rect = ft_font.get_rect(text_black)
     text_black_rect.center = (WIDTH/4,HEIGHT/2)
 
+    filename = 'data/car400.bin'
+    with open(filename, mode='rb') as file: # b is important -> binary
+        airplanes = file.read()
+
+    ind_pick = random.randrange(400)
+    img_surf = pygame.image.frombuffer(airplanes[ind_pick:ind_pick+784],(28,28),"P")
+    img_surf.set_palette(anglcolorpalette)
+
     # New neural network
     brain = NeuralNetwork(3,3,2)
 
@@ -49,6 +59,8 @@ def main():
 
         # Draw text
         # ft_font.render_to(displaysurface, text_black_rect.topleft, text_black, BLACK)
+
+        pygame.Surface.blit(displaysurface,img_surf, (0,0))
 
         # Update display
         pygame.display.update()
