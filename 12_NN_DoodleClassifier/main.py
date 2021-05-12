@@ -42,7 +42,7 @@ def main():
         airplanes = file.read()
 
     ind_pick = random.randrange(400)
-    img_surf = pygame.image.frombuffer(airplanes[ind_pick:ind_pick+784],(28,28),"P")
+    img_surf = pygame.image.frombuffer(airplanes[ind_pick*784:ind_pick*784+784],(28,28),"P")
     img_surf.set_palette(anglcolorpalette)
 
     # New neural network
