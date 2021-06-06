@@ -16,3 +16,9 @@ YELLOW = Color(255, 255, 0)
 
 SIZE = 784
 TOTAL_DATA = 400
+
+labels = {
+    "airplane": 0,
+    "car": 1,
+    "truck": 2
+}

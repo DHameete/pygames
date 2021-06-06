@@ -18,15 +18,23 @@ def splitData(name):
         data = file.read()
 
     output = {
-        "training": [],
-        "testing": []
+        "training": {
+            "data": [],
+            "label": []
+        },
+        "testing": {
+            "data": [],
+            "label": []
+        }
     }
     
     for i in range(TOTAL_DATA):
         if i < math.floor(TOTAL_DATA*0.8):
-            output["training"].append(data[i*SIZE:i*SIZE+SIZE])
+            output["training"]["data"].append(data[i*SIZE:i*SIZE+SIZE])
+            output["training"]["label"] = labels[name]
         else:
-            output["testing"].append(data[i*SIZE:i*SIZE+SIZE])
+            output["testing"]["data"].append(data[i*SIZE:i*SIZE+SIZE])
+            output["testing"]["label"] = labels[name]
     return output
 
 def main():
@@ -56,13 +64,15 @@ def main():
 
     airplanes = splitData('airplane')
     cars = splitData('car')
+    trucks = splitData('truck')
     
-    ind_pick = random.randrange(len(airplanes["training"]))
-    img_surf = pygame.image.frombuffer(airplanes["training"][ind_pick],(28,28),"P")
+    ind_pick = random.randrange(len(airplanes["training"]["data"]))
+    img_surf = pygame.image.frombuffer(airplanes["training"]["data"][ind_pick],(28,28),"P")
     img_surf.set_palette(anglcolorpalette)
+    print(airplanes["training"]["label"])
 
     # New neural network
-    brain = NeuralNetwork(3,3,2)
+    nn = NeuralNetwork(784, 64, 3)
 
     # loop
     while True:
