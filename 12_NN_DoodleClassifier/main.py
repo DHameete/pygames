@@ -18,23 +18,22 @@ def splitData(name):
         data = file.read()
 
     output = {
-        "training": {
-            "data": [],
-            "label": []
-        },
-        "testing": {
-            "data": [],
-            "label": []
-        }
+        "training": [],
+        "testing": []
+    }
+    
+    data_arr = {
+        "data": [],
+        "label": []
     }
     
     for i in range(TOTAL_DATA):
+        data_arr["data"] = data[i*SIZE:i*SIZE+SIZE]
+        data_arr["label"] = labels[name]
         if i < math.floor(TOTAL_DATA*0.8):
-            output["training"]["data"].append(data[i*SIZE:i*SIZE+SIZE])
-            output["training"]["label"] = labels[name]
+            output["training"].append(data_arr)
         else:
-            output["testing"]["data"].append(data[i*SIZE:i*SIZE+SIZE])
-            output["testing"]["label"] = labels[name]
+            output["testing"].append(data_arr)
     return output
 
 def main():
@@ -65,12 +64,16 @@ def main():
     airplanes = splitData('airplane')
     cars = splitData('car')
     trucks = splitData('truck')
-    
-    ind_pick = random.randrange(len(airplanes["training"]["data"]))
-    img_surf = pygame.image.frombuffer(airplanes["training"]["data"][ind_pick],(28,28),"P")
-    img_surf.set_palette(anglcolorpalette)
-    print(airplanes["training"]["label"])
 
+    training = []
+    training += airplanes["training"]
+    training += cars["training"]
+    training += trucks["training"]
+
+    ind_pick = random.randrange(len(training))
+    img_surf = pygame.image.frombuffer(training[ind_pick]["data"],(28,28),"P")
+    img_surf.set_palette(anglcolorpalette)
+    
     # New neural network
     nn = NeuralNetwork(784, 64, 3)
 
