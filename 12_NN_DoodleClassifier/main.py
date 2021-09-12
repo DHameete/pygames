@@ -61,21 +61,32 @@ def main():
     text_black_rect = ft_font.get_rect(text_black)
     text_black_rect.center = (WIDTH/4, HEIGHT/2)
 
+    # Extra data
     airplanes = splitData('airplane')
     cars = splitData('car')
     trucks = splitData('truck')
 
+    # Prepare training data
     training = []
     training += airplanes["training"]
     training += cars["training"]
     training += trucks["training"]
+    random.shuffle(training)
 
     ind_pick = random.randrange(len(training))
-    img_surf = pygame.image.frombuffer(training[ind_pick]["data"],(28,28),"P")
+    img_surf = pygame.image.frombuffer(training[0]["data"],(28,28),"P")
     img_surf.set_palette(anglcolorpalette)
     
     # New neural network
     nn = NeuralNetwork(784, 64, 3)
+
+    # Train
+    for ndx in range(0,len(training)):
+        inputs = [data / 255.0 for data in training[ndx]["data"]]
+        targets = [0, 0, 0]
+        targets[training[ndx]["label"]] = 1
+
+        nn.train(inputs,targets)
 
     # loop
     while True:
