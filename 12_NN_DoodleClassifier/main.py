@@ -11,6 +11,8 @@ from matmath import MatMath
 
 import numpy as np
 
+# New neural network
+nn = NeuralNetwork(784, 64, 3)
 
 def splitData(name):
     filename = f'data/{name}400.bin'
@@ -35,6 +37,24 @@ def splitData(name):
         else:
             output["testing"].append(data_arr)
     return output
+
+def trainEpoch(training):
+    # Train
+    random.shuffle(training)
+    for ndx in range(0,len(training)):
+        inputs = [data / 255.0 for data in training[ndx]["data"]]
+        targets = [0, 0, 0]
+        targets[training[ndx]["label"]] = 1
+
+        nn.train(inputs,targets)
+
+def testAll(testing):
+    for ndx in range(0,len(testing)):
+        inputs = [data / 255.0 for data in testing[ndx]["data"]]
+        targets = [0, 0, 0]
+        targets[testing[ndx]["label"]] = 1
+
+        nn.train(inputs,targets)
 
 def main():
 
@@ -66,27 +86,17 @@ def main():
     cars = splitData('car')
     trucks = splitData('truck')
 
-    # Prepare training data
+    # Prepare and randomize training data
     training = []
     training += airplanes["training"]
     training += cars["training"]
     training += trucks["training"]
-    random.shuffle(training)
+
+    trainEpoch(training)
 
     ind_pick = random.randrange(len(training))
     img_surf = pygame.image.frombuffer(training[0]["data"],(28,28),"P")
     img_surf.set_palette(anglcolorpalette)
-    
-    # New neural network
-    nn = NeuralNetwork(784, 64, 3)
-
-    # Train
-    for ndx in range(0,len(training)):
-        inputs = [data / 255.0 for data in training[ndx]["data"]]
-        targets = [0, 0, 0]
-        targets[training[ndx]["label"]] = 1
-
-        nn.train(inputs,targets)
 
     # loop
     while True:
