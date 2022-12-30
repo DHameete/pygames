@@ -4,7 +4,7 @@ import sys, time, math, random
 
 from settings import *
 
-DIM = 4
+DIM = 8
 
 def main():
 
@@ -34,6 +34,7 @@ def main():
         "LEFT": pygame.image.load("source/left.png").convert_alpha()
     }
 
+    # Create empty grid
     grid = [{"collapse": False, "options": ["BLANK","UP","RIGHT","DOWN", "LEFT"], "index": idx} for idx in range(DIM*DIM)]
 
     # loop
@@ -48,13 +49,24 @@ def main():
         background_surface.fill(DARKGRAY)
         displaysurface.blit(background_surface, (0,0))
 
+        # Pick cell with lowest entropy
+        gridCopy = grid[:]
+        gridCopy.sort(key=lambda cell: len(cell["options"]))
+        gridFiltered = list(filter(lambda cell: len(cell["options"])==len(gridCopy[0]["options"]), gridCopy))
+
+        if (gridFiltered):
+            cell = random.choice(gridFiltered)
+            cell["collapse"] = True
+            pick = random.choice(cell["options"])
+            cell["options"] = [pick]
+
+        # Draw grid
         for cell in grid:
             if cell["collapse"]:
                 idx = cell["index"]
                 y = (idx // DIM) * 50
                 x = (idx % DIM) * 50
-                displaysurface.blit(tiles[cell["options"]], (x,y))
-                # print(idx)
+                displaysurface.blit(tiles[cell["options"][0]], (x,y))
 
 
         # Update display
